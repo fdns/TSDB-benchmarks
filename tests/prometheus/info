@@ -1,0 +1,12 @@
+http://localhost:9090/graph?g0.range_input=1h&g0.expr=topk(3%2C+test_dns_query_name)&g0.tab=1
+
+
+
+topk(5, sum_over_time(test_dns_query_name[5h])) by (group)
+
+
+Prueba 1:
+- Consulta de top 5 dominios consultados
+  - Guardar 1000 datos por segundo.
+  - Obtener top 5 de dominios consultados como tabla.
+  - Obtener top 5 de dominios consultados como grafico.

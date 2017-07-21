@@ -1,0 +1,6 @@
+FROM quay.io/prometheus/node-exporter
+
+
+CMD [ "-collector.procfs", "/host/proc", \
+    "-collector.sysfs", "/host/sys", \
+    "-collector.filesystem.ignored-mount-points", "\"^/(sys|proc|dev|host|etc)($|/)\""]

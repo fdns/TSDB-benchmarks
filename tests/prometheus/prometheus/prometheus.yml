@@ -1,0 +1,22 @@
+scrape_configs:
+  - job_name: 'local-node'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['localhost:9100']
+        labels:
+          group: 'production'
+
+  - job_name: 'test-data'
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['localhost:8000']
+        labels:
+          group: 'production'
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
