@@ -143,3 +143,6 @@ ENV/
 /site
 
 # End of https://www.gitignore.io/api/python,pycharm
+
+# Ignore out files
+out/*
