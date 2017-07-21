@@ -12,5 +12,5 @@ run_benchmark() {
 }
 
 run_benchmark tests/prometheus prometheus domain prometheus prometheus_prometheus_volume out/prometheus_domain_1.out
-run_benchmark 'tests/prometheus' 'prometheus' 'mask' 'prometheus' 'prometheus_prometheus_volume' out/prometheus_domain_1.out
-run_benchmark 'tests/prometheus' 'prometheus' 'length' 'prometheus' 'prometheus_prometheus_volume' out/prometheus_domain_1.out
+run_benchmark 'tests/prometheus' 'prometheus' 'mask' 'prometheus' 'prometheus_prometheus_volume' out/prometheus_mask_1.out
+run_benchmark 'tests/prometheus' 'prometheus' 'length' 'prometheus' 'prometheus_prometheus_volume' out/prometheus_length_1.out

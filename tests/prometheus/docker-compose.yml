@@ -5,19 +5,6 @@ services:
     network_mode: "host"
     volumes:
       - prometheus_volume:/prometheus
-  prometheus-node:
-    build: ./prometheus-node/
-    network_mode: "host"
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-  grafana:
-    build: ./grafana/
-    network_mode: "host"
-    ports: 
-      - 127.0.0.1:3000:3000
-
 volumes:
   prometheus_volume:
     driver: local
