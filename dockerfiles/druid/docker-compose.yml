@@ -118,7 +118,6 @@ services:
       - -Ddruid.metadata.storage.connector.password=diurd
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
-      - -Ddruid.worker.capacity=20
       - -Xms0m
 #      - -Xmx1024m
       - -XX:+PrintGC
