@@ -96,7 +96,6 @@ services:
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Ddruid.indexer.task.restoreTasksOnRestart=true
-      - -Ddruid.indexer.queue.maxSize=20
       - -Xms4096m
       - -Xmx4096m
       - -XX:+PrintGC
@@ -119,6 +118,7 @@ services:
       - -Ddruid.metadata.storage.connector.password=diurd
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Ddruid.worker.capacity=20
       - -Xms0m
 #      - -Xmx1024m
       - -XX:+PrintGC

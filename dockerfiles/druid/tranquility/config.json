@@ -22,7 +22,7 @@
           },
           "granularitySpec" : {
             "type" : "uniform",
-            "segmentGranularity" : "minute",
+            "segmentGranularity" : "DAY",
             "queryGranularity" : "none"
           },
           "metricsSpec" : [
@@ -54,7 +54,7 @@
           "type" : "realtime",
           "maxRowsInMemory" : "100000",
           "intermediatePersistPeriod" : "PT10M",
-          "windowPeriod" : "PT10M"
+          "windowPeriod" : "PT2M"
         }
       },
       "properties" : {

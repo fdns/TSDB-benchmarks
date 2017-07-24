@@ -4,7 +4,7 @@ import urllib, urllib2
 
 from load_iterators import generate_random_domain_iterator
 
-it = generate_random_domain_iterator(5, 100)
+it = generate_random_domain_iterator(5, 10000)
 def get_rand():
     return {
         'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -14,16 +14,15 @@ def get_rand():
 if __name__ == '__main__':
     url = 'http://localhost:8200/v1/post/domains'
 
-    request = urllib2.Request(url,
-                              headers={'Content-Type': 'application/json'},
-                              data='\n'.join([json.dumps(get_rand()) for _ in range(500)]))
-    opener = urllib2.build_opener()
-    print('sending')
     while True:
+        request = urllib2.Request(url,
+                                  headers={'Content-Type': 'application/json'},
+                                  data='\n'.join([json.dumps(get_rand()) for _ in range(500)]))
+        opener = urllib2.build_opener()
         print(opener.open(request).read())
         import time
         time.sleep(1)
-        break
+        #break
     print('sended')
     import os
     os._exit(0)

@@ -4,7 +4,7 @@ ENV DRUID_HOME=/usr/local/druid
 
 RUN mkdir -p $DRUID_HOME
 
-ARG DRUID_VERSION=0.10.0
+ARG DRUID_VERSION=0.9.1.1
 
 RUN curl "http://static.druid.io/artifacts/releases/druid-$DRUID_VERSION-bin.tar.gz" \
       | tar zxf - --strip-components 1 -C $DRUID_HOME
