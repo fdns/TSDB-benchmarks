@@ -1,4 +1,3 @@
----
 version: '2'
 services:
   zookeeper:
@@ -30,12 +29,12 @@ services:
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Xms0m
-#      - -Xmx1024m
+      - -Xmx1024m
       - -XX:+PrintGC
     ports:
       - '8083:8083'
-    #volumes:
-    #  - './data/historical:/usr/local/druid/var/druid:rw'
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
       - zookeeper
       - mysql
@@ -52,7 +51,7 @@ services:
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Xms0m
-#      - -Xmx2048m
+      - -Xmx1024m
       - -XX:+PrintGC
     ports:
       - '8082:8082'
@@ -74,7 +73,7 @@ services:
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Xms0m
-#      - -Xmx1024m
+      - -Xmx1024m
       - -XX:+PrintGC
     ports:
       - '8081:8081'
@@ -96,13 +95,13 @@ services:
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Ddruid.indexer.task.restoreTasksOnRestart=true
-      - -Xms4096m
-      - -Xmx4096m
+      - -Xms1024m
+      - -Xmx1024m
       - -XX:+PrintGC
     ports:
       - '8090:8090'
-    #volumes:
-    #  - './data/overlords:/usr/local/druid/var/druid:rw'
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
       - zookeeper
       - mysql
@@ -117,12 +116,13 @@ services:
       - -Ddruid.metadata.storage.connector.user=druid
       - -Ddruid.metadata.storage.connector.password=diurd
       - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Ddruid.worker.capacity=20
       - -Djava.io.tmpdir=/usr/local/druid/var/tmp
       - -Xms0m
-#      - -Xmx1024m
+      - -Xmx1024m
       - -XX:+PrintGC
-    #volumes:
-    #  - './data/middle_manager:/usr/local/druid/var/druid:rw'
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
       - zookeeper
       - mysql
@@ -132,7 +132,7 @@ services:
     command:
       - server
       - -J-Xms0m
-#      - -J-Xmx512m
+      - -J-Xmx512m
       - -J-XX:+PrintGC
       - -Dzookeeper.connect=zookeeper
       - -Djava.io.tmpdir=/usr/local/tranquility/var/tmp
@@ -147,4 +147,7 @@ services:
   grafana:
     build: ./grafana
     ports:
-      - 127.0.0.1:3000:3000
+      - 3000:3000
+volumes:
+  druid_volume:
+    driver: local

@@ -22,7 +22,7 @@
           },
           "granularitySpec" : {
             "type" : "uniform",
-            "segmentGranularity" : "DAY",
+            "segmentGranularity" : "FIFTEEN_MINUTE",
             "queryGranularity" : "none"
           },
           "metricsSpec" : [
@@ -32,19 +32,9 @@
             },
             {
               "name" : "value_sum",
-              "type" : "doubleSum",
+              "type" : "longSum",
               "fieldName" : "value"
             },
-            {
-              "fieldName" : "value",
-              "name" : "value_min",
-              "type" : "doubleMin"
-            },
-            {
-              "type" : "doubleMax",
-              "name" : "value_max",
-              "fieldName" : "value"
-            }
           ]
         },
         "ioConfig" : {
@@ -54,7 +44,7 @@
           "type" : "realtime",
           "maxRowsInMemory" : "100000",
           "intermediatePersistPeriod" : "PT10M",
-          "windowPeriod" : "PT2M"
+          "windowPeriod" : "PT10M"
         }
       },
       "properties" : {

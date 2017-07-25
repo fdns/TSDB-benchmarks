@@ -1,6 +1,7 @@
 from benchmark import DomainBenchmark, SubnetworkBenchmark, LengthBenchmark
-from benchmarker.prometheus import PrometheusBenchmark
 from load_iterators import generate_random_domain_iterator, generate_random_ipv4_mask_iterator, generate_random_size_iterator
+from benchmarker.prometheus import PrometheusBenchmark
+from benchmarker.druid import DruidBenchmarker
 
 import argparse
 import logging
@@ -30,6 +31,7 @@ type.add_argument('--mask', action='store_const', help='Run the mask benchmark',
 type.add_argument('--length', action='store_const', help='Run the packet length benchmark', dest='bench_type', const=run_length_benchmark)
 database = parser.add_mutually_exclusive_group(required=True)
 database.add_argument('--prometheus', action='store_const', help='Execute the prometheus benchmark', dest='database', const=PrometheusBenchmark())
+database.add_argument('--druid', action='store_const', help='Execute the prometheus benchmark', dest='database', const=DruidBenchmarker())
 parser.add_argument('pid', type=int, help='Pid of the process to benchmark')
 parser.add_argument('volume', type=str, help='Volume name used by the database')
 parser.add_argument('seconds', nargs='?', type=int, help='Number of seconds used for the benchmark', default=1200)

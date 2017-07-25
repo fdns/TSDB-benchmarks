@@ -1,1 +1,0 @@
-FROM druidio/example-cluster
