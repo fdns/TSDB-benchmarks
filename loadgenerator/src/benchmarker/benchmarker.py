@@ -1,9 +1,9 @@
 class Benchmarker(object):
-    def get_domain_benchmarker(self, iterator):
+    def get_domain_benchmarker(self):
         raise NotImplementedError()
     def get_mask_benchmark(self):
         raise NotImplementedError()
-    def get_length_benchmark(self, expected):
+    def get_length_benchmark(self):
         raise NotImplementedError()
 
 class Benchmark(object):

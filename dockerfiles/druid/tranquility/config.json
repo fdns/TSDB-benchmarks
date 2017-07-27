@@ -34,7 +34,7 @@
               "name" : "value_sum",
               "type" : "longSum",
               "fieldName" : "value"
-            },
+            }
           ]
         },
         "ioConfig" : {
@@ -45,6 +45,108 @@
           "maxRowsInMemory" : "100000",
           "intermediatePersistPeriod" : "PT10M",
           "windowPeriod" : "PT10M"
+        }
+      },
+      "properties" : {
+        "task.partitions" : "1",
+        "task.replicants" : "1"
+      }
+    },
+    "masks" : {
+      "spec": {
+        "dataSchema": {
+          "dataSource": "masks",
+          "parser": {
+            "type": "string",
+            "parseSpec": {
+              "timestampSpec": {
+                "column": "timestamp",
+                "format": "auto"
+              },
+              "dimensionsSpec": {
+                "dimensions": [
+                  "mask"
+                ],
+                "dimensionExclusions": [
+                  "timestamp"
+                ]
+              },
+              "format": "json"
+            }
+          },
+          "granularitySpec": {
+            "type": "uniform",
+            "segmentGranularity": "FIFTEEN_MINUTE",
+            "queryGranularity": "none"
+          },
+          "metricsSpec": [
+            {
+              "type": "count",
+              "name": "count"
+            },
+            {
+              "name": "value_sum",
+              "type": "longSum",
+              "fieldName": "value"
+            }
+          ]
+        },
+        "ioConfig": {
+          "type": "realtime"
+        },
+        "tuningConfig": {
+          "type": "realtime",
+          "maxRowsInMemory": "100000",
+          "intermediatePersistPeriod": "PT10M",
+          "windowPeriod": "PT10M"
+        }
+      },
+      "properties" : {
+        "task.partitions" : "1",
+        "task.replicants" : "1"
+      }
+    },
+    "length" : {
+      "spec": {
+        "dataSchema": {
+          "dataSource": "length",
+          "parser": {
+            "type": "string",
+            "parseSpec": {
+              "timestampSpec": {
+                "column": "timestamp",
+                "format": "auto"
+              },
+              "dimensionsSpec": {
+                "dimensions": [],
+                "dimensionExclusions": [
+                  "timestamp"
+                ]
+              },
+              "format": "json"
+            }
+          },
+          "granularitySpec": {
+            "type": "uniform",
+            "segmentGranularity": "FIFTEEN_MINUTE",
+            "queryGranularity": "none"
+          },
+          "metricsSpec": [
+            {
+              "type": "longSum",
+              "name": "bytes",
+              "fieldName": "bytes"
+            }
+          ]
+        },
+        "ioConfig": {
+          "type": "realtime"
+        },
+        "tuningConfig": {
+          "type": "realtime",
+          "maxRowsInMemory": "100000",
+          "intermediatePersistPeriod": "PT10M",
+          "windowPeriod": "PT10M"
         }
       },
       "properties" : {
