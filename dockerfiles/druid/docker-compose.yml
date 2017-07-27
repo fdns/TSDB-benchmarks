@@ -1,0 +1,151 @@
+version: '2'
+services:
+  zookeeper:
+    image: mesoscloud/zookeeper:3.4.8-ubuntu-14.04
+    #volumes:
+    #  - './data/zookeeper:/tmp/zookeeper:rw'
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: druid
+      MYSQL_USER: druid
+      MYSQL_PASSWORD: diurd
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_unicode_ci
+  historical:
+    build: ./druid
+    image: druid
+    command:
+      - historical
+      - -Ddruid.zk.service.host=zookeeper
+      - -Ddruid.metadata.storage.type=mysql
+      - -Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql/druid
+      - -Ddruid.metadata.storage.connector.user=druid
+      - -Ddruid.metadata.storage.connector.password=diurd
+      - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Xms0m
+      - -Xmx1024m
+      - -XX:+PrintGC
+    ports:
+      - '8083:8083'
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
+    depends_on:
+      - zookeeper
+      - mysql
+  broker:
+    build: ./druid
+    image: druid
+    command:
+      - broker
+      - -Ddruid.zk.service.host=zookeeper
+      - -Ddruid.metadata.storage.type=mysql
+      - -Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql/druid
+      - -Ddruid.metadata.storage.connector.user=druid
+      - -Ddruid.metadata.storage.connector.password=diurd
+      - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Xms0m
+      - -Xmx1024m
+      - -XX:+PrintGC
+    ports:
+      - '8082:8082'
+    #volumes:
+    #  - './data/broker:/usr/local/druid/var/druid:rw'
+    depends_on:
+      - zookeeper
+      - mysql
+  coordinator:
+    build: ./druid
+    image: druid
+    command:
+      - coordinator
+      - -Ddruid.zk.service.host=zookeeper
+      - -Ddruid.metadata.storage.type=mysql
+      - -Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql/druid
+      - -Ddruid.metadata.storage.connector.user=druid
+      - -Ddruid.metadata.storage.connector.password=diurd
+      - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Xms0m
+      - -Xmx1024m
+      - -XX:+PrintGC
+    ports:
+      - '8081:8081'
+    #volumes:
+    #  - './data/coordinator:/usr/local/druid/var/druid:rw'
+    depends_on:
+      - zookeeper
+      - mysql
+  overlord:
+    build: ./druid
+    image: druid
+    command:
+      - overlord
+      - -Ddruid.zk.service.host=zookeeper
+      - -Ddruid.metadata.storage.type=mysql
+      - -Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql/druid
+      - -Ddruid.metadata.storage.connector.user=druid
+      - -Ddruid.metadata.storage.connector.password=diurd
+      - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Ddruid.indexer.task.restoreTasksOnRestart=true
+      - -Xms1024m
+      - -Xmx1024m
+      - -XX:+PrintGC
+    ports:
+      - '8090:8090'
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
+    depends_on:
+      - zookeeper
+      - mysql
+  middle_manager:
+    build: ./druid
+    image: druid
+    command:
+      - middleManager
+      - -Ddruid.zk.service.host=zookeeper
+      - -Ddruid.metadata.storage.type=mysql
+      - -Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql/druid
+      - -Ddruid.metadata.storage.connector.user=druid
+      - -Ddruid.metadata.storage.connector.password=diurd
+      - '-Ddruid.extensions.loadList=["mysql-metadata-storage"]'
+      - -Ddruid.worker.capacity=20
+      - -Djava.io.tmpdir=/usr/local/druid/var/tmp
+      - -Xms0m
+      - -Xmx1024m
+      - -XX:+PrintGC
+    volumes:
+      - 'druid_volume:/usr/local/druid/var/druid:rw'
+    depends_on:
+      - zookeeper
+      - mysql
+  tranquility:
+    build: ./tranquility
+    image: tranquility
+    command:
+      - server
+      - -J-Xms0m
+      - -J-Xmx512m
+      - -J-XX:+PrintGC
+      - -Dzookeeper.connect=zookeeper
+      - -Djava.io.tmpdir=/usr/local/tranquility/var/tmp
+      - -configFile=conf/config.json
+    #volumes:
+    #  - './extensions/tranquility/:/usr/local/tranquility/extensions/:rw'
+    ports:
+      - '8200:8200'
+    depends_on:
+      - zookeeper
+      - overlord
+  grafana:
+    build: ./grafana
+    ports:
+      - 3000:3000
+volumes:
+  druid_volume:
+    driver: local

@@ -9,8 +9,8 @@ class Benchmark(object):
     def print_stats_header(self):
         logger.info("iteration\tcpu_time\tmemory\tdisk")
 
-    def print_stats(self, iteration, pid, volume):
-        (cpu_time, memory) = fetch_proc_stats(pid)
+    def print_stats(self, iteration, pids, volume):
+        (cpu_time, memory) = fetch_proc_stats(pids)
         disk = fetch_docker_disk_usuage(volume)
         result = "{}\t{}\t{}\t{}".format(iteration, cpu_time, memory, disk)
         logger.info(result)
@@ -46,6 +46,8 @@ class Benchmark(object):
                 start = time.time()
             benchmarker.insert_data(data_iterator)
 
+        # Give the databases time to catch up before validating
+        time.sleep(10)
         return {
             'stats': [x.get() for x in stat_result] + [self.print_stats(i+1, pid, volume)],
             'query': [x.get() for x in query_result] + [benchmarker.query_data()],

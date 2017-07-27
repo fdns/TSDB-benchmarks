@@ -2,15 +2,37 @@ from subprocess import check_output
 from threading import Lock
 import re
 
-def fetch_proc_stats(pid):
-    filename = '/proc/{}/stat'.format(pid)
-    with open(filename) as stat_file:
-        line = stat_file.readline()
-        data = line.split(' ')
-        cpu_time = int(data[14]) + int(data[15])
-        memory = float(data[23])
-        return (cpu_time, memory)
-    raise ValueError('Pid not found or couldn\'t open the {} file'.format(filename))
+import logging
+logger = logging.getLogger(__name__)
+
+
+def fetch_proc_stats(pids):
+    cpu, memory = 0,0
+    for pid in pids.split('\n'):
+        try:
+            result = check_output("ps --no-headers -o %cpu,rss {}".format(pid), shell=True)
+        except Exception as e:
+            logger.exception(e)
+            import time
+            time.sleep(60)
+            import os
+            os._exit(0)
+        result = result.strip().split(' ')
+        cpu += float(result[0])
+        memory += int(result[1])
+    return (fetch_proc_stats_old(pids), memory)
+
+def fetch_proc_stats_old(pids):
+    """Deprecated, use the /proc file"""
+    cpu, memory = 0,0
+    for pid in pids.split('\n'):
+        with open('/proc/{}/stat'.format(pid)) as stat_file:
+            line = stat_file.readline()
+            data = line.split(' ')
+            cpu += int(data[13]) + int(data[14])
+            #cpu, memory = (cpu + cpu_time, memory + int(data[23]))
+    return cpu
+    return (cpu, memory)
 
 mutex = Lock()
 def fetch_docker_disk_usuage(volume):
