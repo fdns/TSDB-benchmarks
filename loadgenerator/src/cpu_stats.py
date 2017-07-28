@@ -36,9 +36,6 @@ def fetch_docker_disk_usuage(volume):
     regex = re.compile(r'(\d+(?:\.\d+)?)\s*([kmgtp]?[Bb])', re.IGNORECASE)
     order = ['b', 'kb', 'mb', 'gb', 'tb']
     with mutex:
-        logger.debug('fetch_docker_disk_usuage')
         size = check_output("docker system df -v | grep {} | awk '{{ print $3$4 }}'".format(volume), shell=True)
-        logger.debug(size)
-        logger.debug(check_output("docker system df -v | grep {}".format(volume), shell=True))
         value, unit = regex.findall(size)[0]
         return float(value) * (1024**order.index(unit.lower()))
