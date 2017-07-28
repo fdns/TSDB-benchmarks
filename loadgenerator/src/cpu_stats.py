@@ -37,7 +37,7 @@ def fetch_docker_disk_usuage(volume):
     order = ['b', 'kb', 'mb', 'gb', 'tb']
     with mutex:
         logger.debug('fetch_docker_disk_usuage')
-        size = check_output("docker system df -v | grep {} | awk '{{ print $3 }}'".format(volume), shell=True)
+        size = check_output("docker system df -v | grep {} | awk '{{ print $3$4 }}'".format(volume), shell=True)
         logger.debug(size)
         logger.debug(check_output("docker system df -v | grep {}".format(volume), shell=True))
         value, unit = regex.findall(size)[0]
