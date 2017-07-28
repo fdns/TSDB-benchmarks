@@ -6,8 +6,11 @@ env:
     - DOCKER_COMPOSE_VERSION=1.14.0
   matrix:
     - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=domain FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
-    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=mask FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
-    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=length FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
+    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=mask FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_mask_1.out
+    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=length FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_length_1.out
+    - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=domain FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_domain_1.out
+    - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=mask FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_mask_1.out
+    - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=length FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_length_1.out
 language: python
 python: 2.7
 before_install:
