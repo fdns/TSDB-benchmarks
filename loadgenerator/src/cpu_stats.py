@@ -27,12 +27,14 @@ def fetch_proc_stats_old(pids):
     """Deprecated, use the /proc file"""
     cpu, memory = 0,0
     for pid in pids.split('\n'):
+        logger.debug('Opening')
         with open('/proc/{}/stat'.format(pid)) as stat_file:
             line = stat_file.readline()
             logger.debug(line)
             data = line.split(' ')
             cpu += int(data[13]) + int(data[14])
             #cpu, memory = (cpu + cpu_time, memory + int(data[23]))
+    logger.debug('End')
     return cpu
     return (cpu, memory)
 
