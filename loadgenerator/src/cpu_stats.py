@@ -23,7 +23,6 @@ def fetch_cpu_stats(pids):
     for pid in pids.split('\n'):
         with open('/proc/{}/stat'.format(pid)) as stat_file:
             line = stat_file.readline()
-            logger.debug(line)
             data = line.split(' ')
             cpu += int(data[13]) + int(data[14])
     return cpu
