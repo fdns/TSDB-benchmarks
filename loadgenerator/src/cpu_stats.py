@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def fetch_proc_stats(pids):
+    logger.debug('fetch_proc_stats')
     cpu, memory = 0,0
     for pid in pids.split('\n'):
         try:
@@ -21,11 +22,13 @@ def fetch_proc_stats(pids):
         result = result.strip().split(' ')
         cpu += float(result[0])
         memory += int(result[1])
+    logger.debug('fetch_proc_stats RETURN')
     return (fetch_proc_stats_old(pids), memory)
 
 def fetch_proc_stats_old(pids):
     """Deprecated, use the /proc file"""
     cpu, memory = 0,0
+    logger.debug('fetch_proc_stats_old')
     for pid in pids.split('\n'):
         logger.debug('Opening')
         with open('/proc/{}/stat'.format(pid)) as stat_file:
@@ -33,8 +36,7 @@ def fetch_proc_stats_old(pids):
             logger.debug(line)
             data = line.split(' ')
             cpu += int(data[13]) + int(data[14])
-            #cpu, memory = (cpu + cpu_time, memory + int(data[23]))
-    logger.debug('End')
+    logger.debug('fetch_proc_stats_old RETURN')
     return cpu
     return (cpu, memory)
 
