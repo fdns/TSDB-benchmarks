@@ -11,6 +11,7 @@ def fetch_proc_stats(pids):
     for pid in pids.split('\n'):
         try:
             result = check_output("ps --no-headers -o %cpu,rss {}".format(pid), shell=True)
+            logger.debug(result)
         except Exception as e:
             logger.exception(e)
             import time
@@ -28,6 +29,7 @@ def fetch_proc_stats_old(pids):
     for pid in pids.split('\n'):
         with open('/proc/{}/stat'.format(pid)) as stat_file:
             line = stat_file.readline()
+            logger.debug(line)
             data = line.split(' ')
             cpu += int(data[13]) + int(data[14])
             #cpu, memory = (cpu + cpu_time, memory + int(data[23]))
