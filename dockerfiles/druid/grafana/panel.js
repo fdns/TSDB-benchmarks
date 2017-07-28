@@ -68,7 +68,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
@@ -216,7 +216,7 @@
           "thresholds": [],
           "timeFrom": "10m",
           "timeShift": null,
-          "title": "QPS",
+          "title": "QPM",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -294,5 +294,5 @@
   },
   "timezone": "browser",
   "title": "New dashboard Copy",
-  "version": 1
+  "version": 3
 }
