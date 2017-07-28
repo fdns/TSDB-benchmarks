@@ -11,7 +11,7 @@ def fetch_proc_stats(pids):
     cpu, memory = 0,0
     for pid in pids.split('\n'):
         try:
-            result = check_output("ps --no-headers -o %cpu,rss {}".format(pid), shell=True)
+            result = check_output("ps --no-headers -o rss {}".format(pid), shell=True)
             logger.debug(result)
         except Exception as e:
             logger.exception(e)
@@ -19,9 +19,7 @@ def fetch_proc_stats(pids):
             time.sleep(60)
             import os
             os._exit(0)
-        result = result.strip().split(' ')
-        cpu += float(result[0])
-        memory += int(result[1])
+        memory += int(result.strip())
     logger.debug('fetch_proc_stats RETURN')
     return (fetch_proc_stats_old(pids), memory)
 
