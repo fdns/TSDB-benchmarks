@@ -1,6 +1,7 @@
 from subprocess import check_output
 from threading import Lock
 import re
+import os
 
 import logging
 logger = logging.getLogger(__name__)
@@ -14,17 +15,20 @@ def fetch_proc_stats(pids):
             memory += int(result.strip())
         except Exception as e:
             logger.exception(e)
-            import os
-            os._exit(0)
+            os._exit(1)
     return (fetch_cpu_stats(pids), memory)
 
 def fetch_cpu_stats(pids):
     cpu = 0
     for pid in pids.split('\n'):
-        with open('/proc/{}/stat'.format(pid)) as stat_file:
-            line = stat_file.readline()
-            data = line.split(' ')
-            cpu += int(data[13]) + int(data[14])
+        try:
+            with open('/proc/{}/stat'.format(pid)) as stat_file:
+                line = stat_file.readline()
+                data = line.split(' ')
+                cpu += int(data[13]) + int(data[14])
+        except Exception as e:
+            logger.exception(e)
+            os._exit(1)
     return cpu
 
 mutex = Lock()
