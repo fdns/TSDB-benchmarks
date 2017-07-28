@@ -10,10 +10,15 @@ class Benchmark(object):
         logger.info("iteration\tcpu_time\tmemory\tdisk")
 
     def print_stats(self, iteration, pids, volume):
-        (cpu_time, memory) = fetch_proc_stats(pids)
-        disk = fetch_docker_disk_usuage(volume)
-        result = "{}\t{}\t{}\t{}".format(iteration, cpu_time, memory, disk)
-        logger.info(result)
+        try:
+            (cpu_time, memory) = fetch_proc_stats(pids)
+            disk = fetch_docker_disk_usuage(volume)
+            result = "{}\t{}\t{}\t{}".format(iteration, cpu_time, memory, disk)
+            logger.info(result)
+        except Exception as e:
+            logger.exception(e)
+            import os
+            os._exit(0)
         return result
 
     def _run_benchmark(self, benchmarker, data_iterator, pid, volume, seconds, step):
