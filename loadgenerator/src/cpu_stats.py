@@ -37,5 +37,6 @@ def fetch_docker_disk_usuage(volume):
     order = ['b', 'kb', 'mb', 'gb', 'tb']
     with mutex:
         size = check_output("docker system df -v | grep {} | awk '{{ print $3 }}'".format(volume), shell=True)
+        logger.debug(size)
         value, unit = regex.findall(size)[0]
         return float(value) * (1024**order.index(unit.lower()))
