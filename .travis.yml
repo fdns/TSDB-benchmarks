@@ -2,7 +2,12 @@ sudo: required
 services:
   - docker
 env:
-  - DOCKER_COMPOSE_VERSION=1.14.0
+  global:
+    - DOCKER_COMPOSE_VERSION=1.14.0
+  matrix:
+    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=domain FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
+    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=mask FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
+    - DOCKERFILE=dockerfiles/prometheus ENGINE=prometheus TEST=length FILTER=/bin/prometheus VOLUME=prometheus_prometheus_volume OUT=out/prometheus_domain_1.out
 language: python
 python: 2.7
 before_install:
@@ -12,4 +17,4 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 install: "pip install -r requirements.txt"
 script:
-  - sh run.sh
+  - sh benchmark.sh $DOCKERFILE $ENGINE $TEST $FILTER $VOLUME $OUT
