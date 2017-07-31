@@ -1,0 +1,15 @@
+version: '2'
+services:
+  influxdb:
+    build: ./influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - influxdb_volume:/var/lib/influxdb
+  grafana:
+    build: ./grafana
+    ports:
+      - 3000:3000
+volumes:
+  influxdb_volume:
+    driver: local
