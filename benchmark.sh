@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "$CI" = "true" ]; then
+  set -e
+fi
+
 (cd $1 && docker-compose build && docker-compose up -d)
 trap "(cd $1 && docker-compose down -v); exit" INT
 echo "Waiting 60 seconds for setup"
