@@ -206,6 +206,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
         })
 
     def query_data(self):
+        now = datetime.datetime.utcnow()
         query = {
             "queryType": "groupBy",
             "dataSource": self.dataset,
@@ -227,6 +228,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
         return time.time() - before
 
     def validate_data(self, _):
+        now = datetime.datetime.utcnow()
         expected = self.count
         query = {
             "queryType": "groupBy",
