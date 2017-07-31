@@ -3,7 +3,7 @@ from infi.clickhouse_orm.database import Database
 from infi.clickhouse_orm.models import Model
 from infi.clickhouse_orm.fields import *
 from infi.clickhouse_orm.engines import MergeTree
-asdfasdf()
+
 import logging
 logger = logging.getLogger(__name__)
 
