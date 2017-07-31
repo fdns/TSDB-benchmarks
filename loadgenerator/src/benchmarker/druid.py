@@ -9,7 +9,6 @@ import logging
 
 from Queue import Queue
 
-from load_iterators import generate_random_domain_iterator
 from benchmarker import Benchmarker, Benchmark
 
 logger = logging.getLogger(__name__)
@@ -230,7 +229,6 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
 
     def validate_data(self, _):
         expected = self.count
-        now = datetime.datetime.utcnow()
         query = {
             "queryType": "groupBy",
             "dataSource": self.dataset,

@@ -84,7 +84,7 @@
               "interval": "",
               "intervalFactor": 10,
               "query": "SELECT t, groupArray((domain_name, c)) as groupArr FROM (     SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, domain_name, count(*) as c     FROM TestDB.domains     WHERE $timeFilter GROUP BY t, domain_name ORDER BY t limit 5 by t ) GROUP BY t order by t",
-              "rawQuery": "SELECT t, groupArray((domain_name, c)) as groupArr FROM (     SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, domain_name, count(*) as c     FROM TestDB.domains     WHERE query_date >= toDate(1501272771) AND timestamp >= toDateTime(1501272771) GROUP BY t, domain_name ORDER BY t limit 5 by t ) GROUP BY t order by t",
+              "rawQuery": "SELECT t, groupArray((domain_name, c)) as groupArr FROM (     SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, domain_name, count(*) as c     FROM TestDB.domains     WHERE query_date >= toDate(1501514229) AND timestamp >= toDateTime(1501514229) GROUP BY t, domain_name ORDER BY t limit 5 by t ) GROUP BY t order by t",
               "refId": "A",
               "resultFormat": "time_series",
               "table": "domains",
@@ -158,6 +158,7 @@
           },
           "lines": true,
           "linewidth": 1,
+          "links": [],
           "nullPointMode": "null",
           "percentage": false,
           "pointradius": 5,
@@ -175,10 +176,10 @@
               "dateLoading": false,
               "dateTimeColDataType": "timestamp",
               "datetimeLoading": false,
-              "formattedQuery": "<font color=\"darkorange\">SELECT</font> <font color=\"darkcyan\">$timeSeries</font> <font color=\"darkorange\">as</font> t, <font color=\"navajowhite\">count</font>(<font color=\"yellow\">*</font>) <font color=\"darkorange\">FROM</font> <font color=\"darkcyan\">$table</font> <font color=\"darkorange\">WHERE</font> <font color=\"darkcyan\">$timeFilter</font> <font color=\"darkorange\">GROUP BY</font> t <font color=\"darkorange\">ORDER BY</font> t",
+              "formattedQuery": "<font color=\"darkorange\">SELECT</font> (<font color=\"navajowhite\">intDiv</font>(<font color=\"navajowhite\">toUInt32</font>(<font color=\"navajowhite\">toStartOfMinute</font>(<font color=\"darkseagreen\">timestamp</font>)), <font color=\"cornflowerblue\">10</font>) <font color=\"yellow\">*</font> <font color=\"cornflowerblue\">10</font>) <font color=\"yellow\">*</font> <font color=\"cornflowerblue\">1000</font> <font color=\"darkorange\">as</font> t, <font color=\"navajowhite\">count</font>(<font color=\"yellow\">*</font>) <font color=\"darkorange\">FROM</font> <font color=\"darkcyan\">$table</font> <font color=\"darkorange\">WHERE</font> <font color=\"darkcyan\">$timeFilter</font> <font color=\"darkorange\">GROUP BY</font> t <font color=\"darkorange\">ORDER BY</font> t",
               "intervalFactor": 1,
-              "query": "SELECT $timeSeries as t, count(*) FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
-              "rawQuery": "SELECT (intDiv(toUInt32(timestamp), 10) * 10) * 1000 as t, count(*) FROM TestDB.domains WHERE query_date >= toDate(1501251771) AND timestamp >= toDateTime(1501251771) GROUP BY t ORDER BY t",
+              "query": "SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, count(*) FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+              "rawQuery": "SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, count(*) FROM TestDB.domains WHERE query_date >= toDate(1501514229) AND timestamp >= toDateTime(1501514229) GROUP BY t ORDER BY t",
               "refId": "A",
               "resultFormat": "time_series",
               "table": "domains",
@@ -186,7 +187,7 @@
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
+          "timeFrom": "10m",
           "timeShift": null,
           "title": "Panel Title",
           "tooltip": {
@@ -267,5 +268,5 @@
   },
   "timezone": "",
   "title": "New dashboard Copy",
-  "version": 4
+  "version": 1
 }
