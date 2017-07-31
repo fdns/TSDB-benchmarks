@@ -11,6 +11,9 @@ env:
     - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=domain FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_domain_1.out
     - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=mask FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_mask_1.out
     - DOCKERFILE=dockerfiles/druid ENGINE=druid TEST=length FILTER="io.druid.cli.Main" VOLUME=druid_druid_volume OUT=out/druid_length_1.out
+    - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=domain OUT=out/clickhouse_domain_1.out
+    - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=mask OUT=out/clickhouse_mask_1.out
+    - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=length OUT=out/clickhouse_length_1.out
 language: python
 python: 2.7
 before_install:
