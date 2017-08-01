@@ -3,6 +3,7 @@ from load_iterators import generate_random_domain_iterator, generate_random_ipv4
 from benchmarker.prometheus import PrometheusBenchmark
 from benchmarker.druid import DruidBenchmarker
 from benchmarker.clickhouse import ClickHouseBenchmarker
+from benchmarker.influxdata import InfluxDBBenchmarker
 
 import argparse
 import logging
@@ -34,6 +35,7 @@ database = parser.add_mutually_exclusive_group(required=True)
 database.add_argument('--prometheus', action='store_const', help='Execute the prometheus benchmark', dest='database', const=PrometheusBenchmark())
 database.add_argument('--druid', action='store_const', help='Execute the prometheus benchmark', dest='database', const=DruidBenchmarker())
 database.add_argument('--clickhouse', action='store_const', help='Execute the ClickHouse benchmark', dest='database', const=ClickHouseBenchmarker())
+database.add_argument('--influxdb', action='store_const', help='Execute the InfluxDB benchmark', dest='database', const=InfluxDBBenchmarker())
 parser.add_argument('pids', type=str, help='List of new-line separated pids to monitor')
 parser.add_argument('volume', type=str, help='Volume name used by the database')
 parser.add_argument('seconds', nargs='?', type=int, help='Number of seconds used for the benchmark', default=1200)
