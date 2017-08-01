@@ -39,6 +39,7 @@ class BaseInfluxDBBenchmark(AsyncBenchmark):
 class InfluxDBDomainBenchmark(BaseInfluxDBBenchmark):
     def __init__(self):
         super(InfluxDBDomainBenchmark, self).__init__()
+        logger.info('Nota: La consulta de este benchmark no puede ser utilizada en grafana (incompatible por tags).')
 
     def insert_data(self, iterator):
         return self.insert_async({
