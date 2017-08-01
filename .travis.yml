@@ -14,6 +14,9 @@ env:
     - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=domain OUT=out/clickhouse_domain_1.out
     - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=mask OUT=out/clickhouse_mask_1.out
     - DOCKERFILE=dockerfiles/clickhouse ENGINE=clickhouse FILTER=clickhouse-server VOLUME=clickhouse_clickhouse_volume TEST=length OUT=out/clickhouse_length_1.out
+    - DOCKERFILE=dockerfiles/influxdb ENGINE=influxdb FILTER=influxd VOLUME=influxdb_influxdb_volume TEST=domain OUT=out/influxdb_domain_1.out
+    - DOCKERFILE=dockerfiles/influxdb ENGINE=influxdb FILTER=influxd VOLUME=influxdb_influxdb_volume TEST=mask OUT=out/influxdb_mask_1.out
+    - DOCKERFILE=dockerfiles/influxdb ENGINE=influxdb FILTER=influxd VOLUME=influxdb_influxdb_volume TEST=length OUT=out/influxdb_length_1.out
 language: python
 python: 2.7
 before_install:
