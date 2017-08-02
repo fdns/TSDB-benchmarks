@@ -10,10 +10,6 @@ services:
       - 9200:9200
     volumes:
       - elasticsearch_volume:/usr/share/elasticsearch/data
-  grafana:
-    build: ./grafana
-    ports:
-      - 3000:3000
   kibana:
     build: ./kibana
     ports:

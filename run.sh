@@ -11,3 +11,6 @@ sh benchmark.sh dockerfiles/clickhouse clickhouse length clickhouse-server click
 sh benchmark.sh dockerfiles/influxdb influxdb domain influxd influxdb_influxdb_volume out/influxdb_domain_1.out
 sh benchmark.sh dockerfiles/influxdb influxdb mask influxd influxdb_influxdb_volume out/influxdb_mask_1.out
 sh benchmark.sh dockerfiles/influxdb influxdb length influxd influxdb_influxdb_volume out/influxdb_length_1.out
+sh benchmark.sh dockerfiles/elasticsearch elasticsearch domain elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_domain_1.out
+sh benchmark.sh dockerfiles/elasticsearch elasticsearch mask elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_mask_1.out
+sh benchmark.sh dockerfiles/elasticsearch elasticsearch length elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_length_1.out
