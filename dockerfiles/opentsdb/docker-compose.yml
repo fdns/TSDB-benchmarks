@@ -1,0 +1,17 @@
+version: '2'
+services:
+  opentsdb:
+    build: ./opentsdb
+    environment:
+      - '"TSD_CONF_tsd__storage__hbase__zk_quorum"="zk:2181"'
+    ports:
+      - 16010:16010
+    volumes:
+      - influxdb_volume:/var/lib/influxdb
+  grafana:
+    build: ./grafana
+    ports:
+      - 3000:3000
+volumes:
+  influxdb_volume:
+    driver: local
