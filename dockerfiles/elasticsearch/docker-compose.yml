@@ -1,0 +1,19 @@
+version: '2'
+services:
+  elasticsearch:
+    build: ./elasticsearch
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch_volume:/usr/share/elasticsearch/data
+  kibana:
+    build: ./kibana
+    ports:
+      - 5601:5601
+volumes:
+  elasticsearch_volume:
+    driver: local

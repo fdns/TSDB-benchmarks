@@ -1,5 +1,6 @@
 certifi==2017.7.27.1
 chardet==3.0.4
+elasticsearch==5.4.0
 idna==2.5
 infi.clickhouse-orm==0.9.4
 influxdb==4.1.1
