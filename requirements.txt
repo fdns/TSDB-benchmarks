@@ -4,7 +4,6 @@ elasticsearch==5.4.0
 idna==2.5
 infi.clickhouse-orm==0.9.4
 influxdb==4.1.1
-pkg-resources==0.0.0
 prometheus-client==0.0.19
 python-dateutil==2.6.1
 pytz==2017.2
