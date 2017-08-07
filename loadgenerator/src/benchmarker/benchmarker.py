@@ -35,6 +35,9 @@ class AsyncBenchmark(Benchmark):
             # Sleep for one second after the insert
             time.sleep(1)
 
+    def _data_in_queue(self):
+        return not self.cache.empty()
+
     def _insert_data(self, data):
         raise NotImplementedError()
 
