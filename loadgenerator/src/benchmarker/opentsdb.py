@@ -79,6 +79,7 @@ class OpenTSDBBaseBenchmark(AsyncBenchmark):
         while self._data_in_queue():
             logger.info('Waiting for data to be sended')
             time.sleep(10)
+        time.sleep(60)
         with self.lock:
             start = time.time()
             url = 'http://localhost:4242/api/query?start={}&m=sum:1h-sum-none:{}'.format(int(time.time())-24*60*60, metric)
