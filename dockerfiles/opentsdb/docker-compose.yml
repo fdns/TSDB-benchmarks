@@ -1,0 +1,19 @@
+version: '2'
+services:
+  opentsdb:
+    build: ./opentsdb
+    environment:
+      - "TSD_CONF_tsd.http.request.enable_chunked=true"
+      - "TSD_CONF_tsd.http.request.max_chunk=262144"
+      - "TSD_CONF_tsd.storage.fix_duplicates=true"
+    ports:
+      - 4242:4242
+    volumes:
+      - opentsdb_volume:/data/hbase
+  #grafana:
+  #  build: ./grafana
+  #  ports:
+  #    - 3000:3000
+volumes:
+  opentsdb_volume:
+    driver: local

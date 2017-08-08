@@ -20,6 +20,9 @@ env:
     - DOCKERFILE=dockerfiles/elasticsearch ENGINE=elasticsearch FILTER=elasticsearch VOLUME=elasticsearch_elasticsearch_volume TEST=domain OUT=out/elasticsearch_domain_1.out
     - DOCKERFILE=dockerfiles/elasticsearch ENGINE=elasticsearch FILTER=elasticsearch VOLUME=elasticsearch_elasticsearch_volume TEST=mask OUT=out/elasticsearch_mask_1.out
     - DOCKERFILE=dockerfiles/elasticsearch ENGINE=elasticsearch FILTER=elasticsearch VOLUME=elasticsearch_elasticsearch_volume TEST=length OUT=out/elasticsearch_length_1.out
+    - DOCKERFILE=dockerfiles/opentsdb ENGINE=opentsdb FILTER="net.opentsdb.tools.TSDMain|hbase.master.HMaster" VOLUME=opentsdb_opentsdb_volume TEST=domain OUT=out/opentsdb_domain_1.out
+    - DOCKERFILE=dockerfiles/opentsdb ENGINE=opentsdb FILTER="net.opentsdb.tools.TSDMain|hbase.master.HMaster" VOLUME=opentsdb_opentsdb_volume TEST=mask OUT=out/opentsdb_mask_1.out
+    - DOCKERFILE=dockerfiles/opentsdb ENGINE=opentsdb FILTER="net.opentsdb.tools.TSDMain|hbase.master.HMaster" VOLUME=opentsdb_opentsdb_volume TEST=length OUT=out/opentsdb_length_1.out
 language: python
 python: 2.7
 before_install:

@@ -14,3 +14,6 @@ sh benchmark.sh dockerfiles/influxdb influxdb length influxd influxdb_influxdb_v
 sh benchmark.sh dockerfiles/elasticsearch elasticsearch domain elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_domain_1.out
 sh benchmark.sh dockerfiles/elasticsearch elasticsearch mask elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_mask_1.out
 sh benchmark.sh dockerfiles/elasticsearch elasticsearch length elasticsearch elasticsearch_elasticsearch_volume out/elasticsearch_length_1.out
+sh benchmark.sh dockerfiles/opentsdb opentsdb domain "net.opentsdb.tools.TSDMain|hbase.master.HMaster" opentsdb_opentsdb_volume out/opentsdb_domain_1.out
+sh benchmark.sh dockerfiles/opentsdb opentsdb mask "net.opentsdb.tools.TSDMain|hbase.master.HMaster" opentsdb_opentsdb_volume out/opentsdb_mask_1.out
+sh benchmark.sh dockerfiles/opentsdb opentsdb length "net.opentsdb.tools.TSDMain|hbase.master.HMaster" opentsdb_opentsdb_volume out/opentsdb_length_1.out

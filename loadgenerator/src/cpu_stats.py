@@ -12,7 +12,7 @@ def fetch_proc_stats(pids):
     for pid in pids.split('\n'):
         try:
             result = check_output("ps --no-headers -o rss {}".format(pid), shell=True)
-            memory += int(result.strip())
+            memory += int(result.strip()) * 1024
         except Exception as e:
             logger.exception(e)
             os._exit(1)
@@ -38,4 +38,4 @@ def fetch_docker_disk_usuage(volume):
     with mutex:
         size = check_output("docker system df -v | grep {} | awk '{{ print $3$4 }}'".format(volume), shell=True)
         value, unit = regex.findall(size)[0]
-        return float(value) * (1024**order.index(unit.lower()))
+        return int(float(value) * (1024**order.index(unit.lower())))

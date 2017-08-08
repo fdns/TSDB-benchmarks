@@ -5,6 +5,7 @@ from benchmarker.druid import DruidBenchmarker
 from benchmarker.clickhouse import ClickHouseBenchmarker
 from benchmarker.influxdata import InfluxDBBenchmarker
 from benchmarker.elastic import ElasticBenchmarker
+from benchmarker.opentsdb import OpenTSDBBenchmarker
 
 import argparse
 import logging
@@ -38,6 +39,7 @@ database.add_argument('--druid', action='store_const', help='Execute the prometh
 database.add_argument('--clickhouse', action='store_const', help='Execute the ClickHouse benchmark', dest='database', const=ClickHouseBenchmarker())
 database.add_argument('--influxdb', action='store_const', help='Execute the InfluxDB benchmark', dest='database', const=InfluxDBBenchmarker())
 database.add_argument('--elasticsearch', action='store_const', help='Execute the ElasticSeach benchmark', dest='database', const=ElasticBenchmarker())
+database.add_argument('--opentsdb', action='store_const', help='Execute the OpenTSDB benchmark', dest='database', const=OpenTSDBBenchmarker())
 parser.add_argument('pids', type=str, help='List of new-line separated pids to monitor')
 parser.add_argument('volume', type=str, help='Volume name used by the database')
 parser.add_argument('seconds', nargs='?', type=int, help='Number of seconds used for the benchmark', default=1200)
