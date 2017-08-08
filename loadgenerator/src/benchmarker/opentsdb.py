@@ -1,11 +1,9 @@
 from benchmarker import Benchmarker, AsyncBenchmark
 from threading import Lock
-import datetime
 import json
 import urllib
 import urllib2
 import time
-import random
 import logging
 
 logger = logging.getLogger(__name__)
@@ -117,6 +115,7 @@ class OpenTSDBDomainBenchmark(OpenTSDBBaseBenchmark):
             opener = urllib2.build_opener()
             for i in range(1):
                 req = url.format(now+i*60*5,now+(i+1)*60*10)
+                urllib.urlopen(req).read()
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
@@ -142,13 +141,13 @@ class OpenTSDBMaskBenchmark(OpenTSDBBaseBenchmark):
 
     def query_data(self):
         # Note: Querying over 10m range with 1m querys never return the result
-        url = 'http://localhost:4242/api/query/gexp?start={}&end={}&exp=highestCurrent(sum:5m-sum-none:masks{{mask=*}}, 5)'
-        now = int(time.time()) - 60*10
+        url = 'http://localhost:4242/api/query?start={}&end={}&m=sum:1m-sum-none:masks{{mask=*}}'
+        now = int(time.time())
         start = time.time()
         try:
             opener = urllib2.build_opener()
-            for i in range(1):
-                req = url.format(now+i*60*5,now+(i+1)*60*10)
+            req = url.format(now - 60*10, now)
+            result = opener.open(req)
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
@@ -180,14 +179,13 @@ class OpenTSDBLengthBenchmark(OpenTSDBBaseBenchmark):
 
     def query_data(self):
         # Note: Querying over 10m range with 1m querys never return the result
-        url = 'http://localhost:4242/api/query?start={}&end={}&m=sum:5m-sum-none:length'
-        now = int(time.time()) - 60*10
+        url = 'http://localhost:4242/api/query?start={}&end={}&m=sum:1m-sum-none:length'
+        now = int(time.time())
         start = time.time()
         try:
             opener = urllib2.build_opener()
-            for i in range(1):
-                req = url.format(now+i*60*5, now+(i+1)*60*10)
-                opener.open(req)
+            req = url.format(now - 60*10, now)
+            respose = opener.open(req)
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
