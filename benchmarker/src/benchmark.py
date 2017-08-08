@@ -7,14 +7,20 @@ logger = logging.getLogger(__name__)
 
 class Benchmark(object):
     def print_stats_header(self):
-        logger.info("iteration\tcpu_time\tmemory\tdisk")
+        logger.info("timestamp\titeration\tcpu_time\tmemory\tdisk")
 
     def print_stats(self, iteration, pids, volume):
         try:
             (cpu_time, memory) = fetch_proc_stats(pids)
             disk = fetch_docker_disk_usuage(volume)
-            result = "{}\t{}\t{}\t{}".format(iteration, cpu_time, memory, disk)
-            logger.info(result)
+            result = {
+                'timestamp': int(time.time()),
+                'iteration': iteration,
+                'cpu': cpu_time,
+                'memory': memory,
+                'disk': disk
+            }
+            logger.info("{timestamp}\t{iteration}\t{cpu}\t{memory}\t{disk}".format(**result))
         except Exception as e:
             logger.exception(e)
             import os
