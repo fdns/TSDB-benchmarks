@@ -24,7 +24,7 @@ class BaseInfluxDBBenchmark(AsyncBenchmark):
         self.client = InfluxDBClient('localhost', 8086, 'root', 'root', 'TestDB')
         self.retention_policy = 'TestDB'
         self.client.create_database('TestDB')
-        self.client.create_retention_policy('TestDB', '1d', 1, default=True)
+        self.client.create_retention_policy('TestDB', 'INF', 1, database='TestDB', default=True)
 
     def current_time(self):
         self.id = (self.id + 1) % 1000000 # Prevent value override

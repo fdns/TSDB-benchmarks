@@ -8,4 +8,4 @@ def load(filename):
             return json.load(file)
         except ValueError:
             logger.error('Error parsing json data from file {}'.format(file))
-            raise
+            raise ValueError('Error parsing json data from file {}'.format(filename))
