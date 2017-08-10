@@ -21,6 +21,7 @@ class ElasticBenchmarker(Benchmarker):
 class ElasticBaseBenchmark(AsyncBenchmark):
     def __init__(self):
         super(ElasticBaseBenchmark, self).__init__()
+        logging.getLogger('elasticsearch').setLevel(logging.WARNING)
         self.es = Elasticsearch()
         self.__create_indices()
 
