@@ -57,7 +57,8 @@ def graph_query_time(data, label, testname, fig=None):
     plt.title('{}: Tiempo de consulta Vs Tiempo'.format(testname))
     plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
     plt.ylabel('Tiempo utilizado en obtener los datos [segundos]')
-    plt.plot(range(len(data)), data, label=label)
+    base = data[0][0]
+    plt.plot([x[0]-base for x in data], [x[1] for x in data], label=label)
     plt.legend()
     return fig
 
@@ -65,9 +66,9 @@ def main():
     graphs = (graph_cpu_usuage, graph_disk_usuage, graph_memory_usuage, graph_query_time)
     tests = [('domain', 'Dominio'), ('mask', 'Mascara de Red'), ('length', 'Largode paquetes')]
     databases = [#('clickhouse', 'ClickHouse'), # Require SSE4.2
-                 ('druid', 'Druid'),
-                 ('elasticsearch', 'ElasticSearch'),
-                 ('influxdb', 'InfluxDB'),
+                 #('druid', 'Druid'),
+                 #('elasticsearch', 'ElasticSearch'),
+                 #('influxdb', 'InfluxDB'),
                  ('prometheus', 'Prometheus'),
                  #('opentsdb', 'OpenTSDB')
     ]

@@ -89,7 +89,7 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
         }
         before = time.time()
         self._query(query)
-        return time.time() - before
+        return (before, time.time() - before)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -149,7 +149,7 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
         }
         before = time.time()
         self._query(query)
-        return time.time() - before
+        return (before, time.time() - before)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -170,8 +170,6 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         now = time.time()
-        logger.info('validating')
-        logger.info(self._query(query))
         value = json.loads(self._query(query))[0]['event']['count']
         if expected == value:
             logger.info('The stored data is equal to the produced quantity.')
@@ -213,7 +211,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
         }
         before = time.time()
         self._query(query)
-        return time.time() - before
+        return (before, time.time() - before)
 
     def validate_data(self, _):
         now = datetime.datetime.utcnow()

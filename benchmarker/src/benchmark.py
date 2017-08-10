@@ -57,11 +57,17 @@ class Benchmark(object):
                 start = time.time()
             benchmarker.insert_data(data_iterator)
 
+        # Send the last print stat and query data
+        last_stats = self.print_stats(i+1, pid, volume)
+        last_query = benchmarker.query_data()
+        # Wait until all the data is sended
+        while not benchmarker.data_sended():
+            time.sleep(5)
         # Give the databases time to catch up before validating
         time.sleep(10)
         return {
-            'stats': [x.get() for x in stat_result] + [self.print_stats(i+1, pid, volume)],
-            'query': [x.get() for x in query_result] + [benchmarker.query_data()],
+            'stats': [x.get() for x in stat_result] + [last_stats],
+            'query': [x.get() for x in query_result] + [last_query],
             'validation': benchmarker.validate_data(total),
         }
 

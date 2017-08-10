@@ -143,8 +143,8 @@ class ElasticDomainBenchmark(ElasticBaseBenchmark):
             )
         except Exception as e:
             logger.exception(e)
-            return -1
-        return time.time() - start
+            return (start, -1)
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._count_data(expected, 'domain')
@@ -185,7 +185,7 @@ class ElasticMaskBenchmark(ElasticBaseBenchmark):
                 }
             }
         )
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._count_data(expected, 'mask')
@@ -233,7 +233,7 @@ class ElasticLengthBenchmark(ElasticBaseBenchmark):
                 }
             }
         )
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, _):
         now = time.time()
