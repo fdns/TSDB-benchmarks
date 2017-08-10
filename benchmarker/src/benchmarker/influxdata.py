@@ -98,7 +98,6 @@ class InfluxDBMaskBenchmark(BaseInfluxDBBenchmark):
     def query_data(self):
         start = time.time()
         result = self.client.query('SELECT sum("value") FROM "masks" WHERE time > now()-10m GROUP BY time(1m), mask')
-        logger.info(result)
         return time.time() - start
 
 

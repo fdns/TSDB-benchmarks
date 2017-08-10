@@ -113,31 +113,36 @@ class ElasticDomainBenchmark(ElasticBaseBenchmark):
 
     def query_data(self):
         start = time.time()
-        self.es.search(
-            index='test',
-            doc_type='domain',
-            body={
-                'query': {
-                },
-                'aggs': {
-                    'total': {
-                        'date_histogram': {
-                            'interval': '1m',
-                            'field': '@timestamp'
-                        },
-                        'aggs': {
-                            'dt': {
-                                'terms': {
-                                    'field': 'domain',
-                                    "size": 2,
-                                    "order": {"_count": "desc"}
-                                },
+        try:
+            self.es.search(
+                index='test',
+                doc_type='domain',
+                timeout='60s',
+                body={
+                    'query': {
+                    },
+                    'aggs': {
+                        'total': {
+                            'date_histogram': {
+                                'interval': '1m',
+                                'field': '@timestamp'
+                            },
+                            'aggs': {
+                                'dt': {
+                                    'terms': {
+                                        'field': 'domain',
+                                        "size": 2,
+                                        "order": {"_count": "desc"}
+                                    },
+                                }
                             }
                         }
                     }
                 }
-            }
-        )
+            )
+        except Exception as e:
+            logger.exception(e)
+            return -1
         return time.time() - start
 
     def validate_data(self, expected):
