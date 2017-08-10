@@ -8,7 +8,6 @@ infi.clickhouse-orm==0.9.4
 influxdb==4.1.1
 matplotlib==2.0.2
 numpy==1.13.1
-pkg-resources==0.0.0
 prometheus-client==0.0.19
 pyparsing==2.2.0
 python-dateutil==2.6.1

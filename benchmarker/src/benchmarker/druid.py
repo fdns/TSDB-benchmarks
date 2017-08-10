@@ -3,11 +3,8 @@ import json
 import urllib2
 import StringIO
 import gzip
-import thread
 import time
 import logging
-
-from Queue import Queue
 
 from benchmarker import Benchmarker, AsyncBenchmark
 

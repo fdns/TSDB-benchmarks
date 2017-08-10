@@ -66,11 +66,11 @@ def main():
     graphs = (graph_cpu_usuage, graph_disk_usuage, graph_memory_usuage, graph_query_time)
     tests = [('domain', 'Dominio'), ('mask', 'Mascara de Red'), ('length', 'Largode paquetes')]
     databases = [#('clickhouse', 'ClickHouse'), # Require SSE4.2
-                 #('druid', 'Druid'),
-                 #('elasticsearch', 'ElasticSearch'),
-                 #('influxdb', 'InfluxDB'),
+                 ('druid', 'Druid'),
+                 ('elasticsearch', 'ElasticSearch'),
+                 ('influxdb', 'InfluxDB'),
                  ('prometheus', 'Prometheus'),
-                 #('opentsdb', 'OpenTSDB')
+                 ('opentsdb', 'OpenTSDB')
     ]
     for test in tests:
         fig = [None for _ in range(len(graphs))]
