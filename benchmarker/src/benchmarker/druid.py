@@ -9,7 +9,7 @@ import logging
 
 from Queue import Queue
 
-from benchmarker import Benchmarker, Benchmark
+from benchmarker import Benchmarker, AsyncBenchmark
 
 logger = logging.getLogger(__name__)
 
@@ -23,26 +23,14 @@ class DruidBenchmarker(Benchmarker):
     def get_length_benchmark(self):
         return DruidLengthBenchmark()
 
-class DruidBaseBenchmark(Benchmark):
+class DruidBaseBenchmark(AsyncBenchmark):
     def __init__(self, dataset):
+        super(DruidBaseBenchmark, self).__init__()
         self.dataset = dataset
         self.insert_url = 'http://localhost:8200/v1/post/{}'.format(dataset)
 
-    def initialize(self):
-        self.cache = Queue()
-        thread.start_new_thread(self._process_queue, ())
-
-    def _process_queue(self):
-        while True:
-            cache = []
-            for _ in range(self.cache.qsize()):
-                cache.append(self.cache.get_nowait())
-            if len(cache) > 0:
-                self._insert_data('\n'.join([json.dumps(x) for x in cache]))
-            # Sleep for one second after the insert
-            time.sleep(1)
-
     def _insert_data(self, data):
+        data = '\n'.join([json.dumps(x) for x in data])
         out = StringIO.StringIO()
         with gzip.GzipFile(fileobj=out, mode="w") as f:
             f.write(data)
@@ -74,7 +62,7 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
         DruidBaseBenchmark.__init__(self, 'domains')
 
     def insert_data(self, iterator):
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'domain': next(iterator)
         })
@@ -135,7 +123,7 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
         DruidBaseBenchmark.__init__(self, 'masks')
 
     def insert_data(self, iterator):
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'mask': next(iterator)
         })
@@ -200,7 +188,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
     def insert_data(self, iterator):
         bytes = next(iterator)
         self.count += bytes
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'bytes': bytes
         })
