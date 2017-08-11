@@ -1,3 +1,4 @@
+from threading import Lock
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -21,34 +22,39 @@ class ElasticBenchmarker(Benchmarker):
 class ElasticBaseBenchmark(AsyncBenchmark):
     def __init__(self):
         super(ElasticBaseBenchmark, self).__init__()
+        logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+        self.mutex = Lock()
         self.es = Elasticsearch()
         self.__create_indices()
 
     def _insert_data(self, data):
-        bulk(self.es, data)
+        with self.mutex:
+            bulk(self.es, data)
 
     def _count_data(self, expected, doc_type):
-        now = time.time()
-        value = self.es.search(
-            index='test',
-            doc_type=doc_type,
-            body={
-                'query': {
-                },
-                'aggs': {
-                    'total_count': {
-                        'value_count': {
-                            'field': 'type'
+        with self.mutex:
+            time.sleep(60)
+            now = time.time()
+            value = self.es.search(
+                index='test',
+                doc_type=doc_type,
+                body={
+                    'query': {
+                    },
+                    'aggs': {
+                        'total_count': {
+                            'value_count': {
+                                'field': 'type'
+                            }
                         }
                     }
-                }
-            })
-        value = value['hits']['total']
-        if expected == value:
-            logger.info('The stored data is equal to the produced quantity.')
-        else:
-            logger.warning('The stored data is different to the produced quantity (expected {} != {}).'.format(expected, value))
-        return (expected, value, time.time() - now)
+                })
+            value = value['hits']['total']
+            if expected == value:
+                logger.info('The stored data is equal to the produced quantity.')
+            else:
+                logger.warning('The stored data is different to the produced quantity (expected {} != {}).'.format(expected, value))
+            return (expected, value, time.time() - now)
 
     def __create_indices(self):
         self.es.indices.create('test', body={
@@ -113,32 +119,37 @@ class ElasticDomainBenchmark(ElasticBaseBenchmark):
 
     def query_data(self):
         start = time.time()
-        self.es.search(
-            index='test',
-            doc_type='domain',
-            body={
-                'query': {
-                },
-                'aggs': {
-                    'total': {
-                        'date_histogram': {
-                            'interval': '1m',
-                            'field': '@timestamp'
-                        },
-                        'aggs': {
-                            'dt': {
-                                'terms': {
-                                    'field': 'domain',
-                                    "size": 2,
-                                    "order": {"_count": "desc"}
-                                },
+        try:
+            self.es.search(
+                index='test',
+                doc_type='domain',
+                timeout='60s',
+                body={
+                    'query': {
+                    },
+                    'aggs': {
+                        'total': {
+                            'date_histogram': {
+                                'interval': '1m',
+                                'field': '@timestamp'
+                            },
+                            'aggs': {
+                                'dt': {
+                                    'terms': {
+                                        'field': 'domain',
+                                        "size": 2,
+                                        "order": {"_count": "desc"}
+                                    },
+                                }
                             }
                         }
                     }
                 }
-            }
-        )
-        return time.time() - start
+            )
+        except Exception as e:
+            logger.exception(e)
+            return (start, -1)
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._count_data(expected, 'domain')
@@ -179,7 +190,7 @@ class ElasticMaskBenchmark(ElasticBaseBenchmark):
                 }
             }
         )
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._count_data(expected, 'mask')
@@ -227,29 +238,31 @@ class ElasticLengthBenchmark(ElasticBaseBenchmark):
                 }
             }
         )
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, _):
-        now = time.time()
-        value = self.es.search(
-            index='test',
-            doc_type='length',
-            body={
-                'query': {
-                },
-                'aggs': {
-                    'total_count': {
-                        'sum': {
-                            'field': 'length'
+        with self.mutex:
+            time.sleep(60)
+            now = time.time()
+            value = self.es.search(
+                index='test',
+                doc_type='length',
+                body={
+                    'query': {
+                    },
+                    'aggs': {
+                        'total_count': {
+                            'sum': {
+                                'field': 'length'
+                            }
                         }
                     }
-                }
-            })
+                })
 
-        value = value['aggregations']['total_count']['value']
-        if self.count == value:
-            logger.info('The stored data is equal to the produced quantity.')
-        else:
-            logger.warning(
-                'The stored data is different to the produced quantity (expected {} != {}).'.format(self.count, value))
-        return (self.count, value, time.time() - now)
+            value = value['aggregations']['total_count']['value']
+            if self.count == value:
+                logger.info('The stored data is equal to the produced quantity.')
+            else:
+                logger.warning(
+                    'The stored data is different to the produced quantity (expected {} != {}).'.format(self.count, value))
+            return (self.count, value, time.time() - now)

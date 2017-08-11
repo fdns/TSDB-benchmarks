@@ -73,7 +73,7 @@ class ClickHouseDomainBenchmark(ClickHouseBaseBenchmark):
         start = time.time()
         logger.debug(self.db.raw('SELECT t, groupArray((domain_name, c)) as groupArr FROM (SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, domain_name, count(*) as c FROM TestDB.domains WHERE query_date BETWEEN toDate(1501514798) AND toDate({}) AND timestamp BETWEEN toDateTime({}) AND toDateTime({}) GROUP BY t, domain_name ORDER BY t limit 5 by t ) GROUP BY t order by t'\
                     .format(now, before, now, before)))
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._validate_data(expected, 'TestDB.domains')
@@ -94,7 +94,7 @@ class ClickHouseMaskBenchmark(ClickHouseBaseBenchmark):
         start = time.time()
         logger.debug(self.db.raw('SELECT t, groupArray((mask, c)) as groupArr FROM (SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, mask, count(*) as c FROM TestDB.mask WHERE query_date BETWEEN toDate({}) AND toDate({}) AND timestamp BETWEEN toDateTime({}) AND toDateTime({}) GROUP BY t, mask ORDER BY t) GROUP BY t order by t'\
                     .format(before, now, before, now)))
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._validate_data(expected, 'TestDB.mask')
@@ -120,7 +120,7 @@ class ClickHouseLengthBenchmark(ClickHouseBaseBenchmark):
         start = time.time()
         logger.debug(self.db.raw('SELECT t, sum(l) FROM (SELECT (intDiv(toUInt32(toStartOfMinute(timestamp)), 10) * 10) * 1000 as t, sum(length) as l FROM TestDB.length WHERE query_date BETWEEN toDate({}) AND toDate({}) AND timestamp BETWEEN toDateTime({}) AND toDateTime({}) GROUP BY t ORDER BY t) GROUP BY t order by t'\
                     .format(before, now, before, now)))
-        return time.time() - start
+        return (start, time.time() - start)
 
     def validate_data(self, _):
         expected = self.count

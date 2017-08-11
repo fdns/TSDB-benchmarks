@@ -15,6 +15,7 @@ def fetch_proc_stats(pids):
             memory += int(result.strip()) * 1024
         except Exception as e:
             logger.exception(e)
+            logger.error('Error fetching resident memory of {}'.format(pid))
             os._exit(1)
     return (fetch_cpu_stats(pids), memory)
 
@@ -28,6 +29,7 @@ def fetch_cpu_stats(pids):
                 cpu += int(data[13]) + int(data[14])
         except Exception as e:
             logger.exception(e)
+            logger.error('Error analysing pids {}'.format(pids))
             os._exit(1)
     return cpu
 

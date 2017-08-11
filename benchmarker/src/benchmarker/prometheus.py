@@ -37,9 +37,13 @@ class PrometheusBaseBenchmark(Benchmark):
             'step': 60,
         }
         before = time.time()
-        urllib2.urlopen(url + urllib.urlencode(query)).read()
+        try:
+            urllib2.urlopen(url + urllib.urlencode(query)).read()
+        except Exception as e:
+            logger.exception(e)
+            return -1
         dt = time.time() - before
-        return dt
+        return (before, dt)
 
     def _check_quantity(self, query, expected):
         time.sleep(20)

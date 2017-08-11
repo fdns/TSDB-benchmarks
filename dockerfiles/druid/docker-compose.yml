@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   zookeeper:
     image: mesoscloud/zookeeper:3.4.8-ubuntu-14.04
@@ -14,6 +14,10 @@ services:
     command:
       - --character-set-server=utf8
       - --collation-server=utf8_unicode_ci
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        interval: 10s
+        retries: 10
   historical:
     build: ./druid
     image: druid
@@ -34,8 +38,10 @@ services:
     volumes:
       - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
-      - zookeeper
-      - mysql
+      zookeeper:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   broker:
     build: ./druid
     image: druid
@@ -56,8 +62,10 @@ services:
     #volumes:
     #  - './data/broker:/usr/local/druid/var/druid:rw'
     depends_on:
-      - zookeeper
-      - mysql
+      zookeeper:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   coordinator:
     build: ./druid
     image: druid
@@ -78,8 +86,10 @@ services:
     #volumes:
     #  - './data/coordinator:/usr/local/druid/var/druid:rw'
     depends_on:
-      - zookeeper
-      - mysql
+      zookeeper:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   overlord:
     build: ./druid
     image: druid
@@ -101,8 +111,10 @@ services:
     volumes:
       - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
-      - zookeeper
-      - mysql
+      zookeeper:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   middle_manager:
     build: ./druid
     image: druid
@@ -122,8 +134,10 @@ services:
     volumes:
       - 'druid_volume:/usr/local/druid/var/druid:rw'
     depends_on:
-      - zookeeper
-      - mysql
+      zookeeper:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   tranquility:
     build: ./tranquility
     image: tranquility
@@ -140,12 +154,14 @@ services:
     ports:
       - '8200:8200'
     depends_on:
-      - zookeeper
-      - overlord
-  grafana:
-    build: ./grafana
-    ports:
-      - 3000:3000
+      zookeeper:
+        condition: service_started
+      overlord:
+        condition: service_started
+  #grafana:
+  #  build: ./grafana
+  #  ports:
+  #    - 3000:3000
 volumes:
   druid_volume:
     driver: local

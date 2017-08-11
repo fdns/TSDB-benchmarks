@@ -24,7 +24,7 @@ class BaseInfluxDBBenchmark(AsyncBenchmark):
         self.client = InfluxDBClient('localhost', 8086, 'root', 'root', 'TestDB')
         self.retention_policy = 'TestDB'
         self.client.create_database('TestDB')
-        self.client.create_retention_policy('TestDB', '1d', 1, default=True)
+        self.client.create_retention_policy('TestDB', 'INF', 1, database='TestDB', default=True)
 
     def current_time(self):
         self.id = (self.id + 1) % 1000000 # Prevent value override
@@ -66,7 +66,7 @@ class InfluxDBDomainBenchmark(BaseInfluxDBBenchmark):
     def query_data(self):
         start = time.time()
         result = self.client.query('SELECT TOP(n, 2), domain FROM (SELECT sum("value") as n FROM "domains" WHERE time > now()-10m GROUP BY time(1m), domain) where time > now()-10m group by time(1m)')
-        return time.time() - start
+        return (start, time.time() - start)
 
 
 class InfluxDBMaskBenchmark(BaseInfluxDBBenchmark):
@@ -98,8 +98,7 @@ class InfluxDBMaskBenchmark(BaseInfluxDBBenchmark):
     def query_data(self):
         start = time.time()
         result = self.client.query('SELECT sum("value") FROM "masks" WHERE time > now()-10m GROUP BY time(1m), mask')
-        logger.info(result)
-        return time.time() - start
+        return (start, time.time() - start)
 
 
 class InfluxDBLengthBenchmark(BaseInfluxDBBenchmark):
@@ -131,4 +130,4 @@ class InfluxDBLengthBenchmark(BaseInfluxDBBenchmark):
     def query_data(self):
         start = time.time()
         result = self.client.query('SELECT sum("length") FROM "lengths" WHERE time > now()-10m GROUP BY time(1m)')
-        return time.time() - start
+        return (start, time.time() - start)

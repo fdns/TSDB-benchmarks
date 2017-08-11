@@ -3,13 +3,10 @@ import json
 import urllib2
 import StringIO
 import gzip
-import thread
 import time
 import logging
 
-from Queue import Queue
-
-from benchmarker import Benchmarker, Benchmark
+from benchmarker import Benchmarker, AsyncBenchmark
 
 logger = logging.getLogger(__name__)
 
@@ -23,26 +20,14 @@ class DruidBenchmarker(Benchmarker):
     def get_length_benchmark(self):
         return DruidLengthBenchmark()
 
-class DruidBaseBenchmark(Benchmark):
+class DruidBaseBenchmark(AsyncBenchmark):
     def __init__(self, dataset):
+        super(DruidBaseBenchmark, self).__init__()
         self.dataset = dataset
         self.insert_url = 'http://localhost:8200/v1/post/{}'.format(dataset)
 
-    def initialize(self):
-        self.cache = Queue()
-        thread.start_new_thread(self._process_queue, ())
-
-    def _process_queue(self):
-        while True:
-            cache = []
-            for _ in range(self.cache.qsize()):
-                cache.append(self.cache.get_nowait())
-            if len(cache) > 0:
-                self._insert_data('\n'.join([json.dumps(x) for x in cache]))
-            # Sleep for one second after the insert
-            time.sleep(1)
-
     def _insert_data(self, data):
+        data = '\n'.join([json.dumps(x) for x in data])
         out = StringIO.StringIO()
         with gzip.GzipFile(fileobj=out, mode="w") as f:
             f.write(data)
@@ -74,7 +59,7 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
         DruidBaseBenchmark.__init__(self, 'domains')
 
     def insert_data(self, iterator):
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'domain': next(iterator)
         })
@@ -100,8 +85,11 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return time.time() - before
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -135,7 +123,7 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
         DruidBaseBenchmark.__init__(self, 'masks')
 
     def insert_data(self, iterator):
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'mask': next(iterator)
         })
@@ -160,8 +148,11 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return time.time() - before
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -182,8 +173,6 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         now = time.time()
-        logger.info('validating')
-        logger.info(self._query(query))
         value = json.loads(self._query(query))[0]['event']['count']
         if expected == value:
             logger.info('The stored data is equal to the produced quantity.')
@@ -200,7 +189,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
     def insert_data(self, iterator):
         bytes = next(iterator)
         self.count += bytes
-        self.cache.put({
+        self.insert_async({
             'timestamp': datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             'bytes': bytes
         })
@@ -224,8 +213,11 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return time.time() - before
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, _):
         now = datetime.datetime.utcnow()

@@ -50,4 +50,5 @@ if __name__ == '__main__':
     logging.basicConfig()
     logger.setLevel(args.loglevel)
     logger.info('Total number of metrics: {}'.format(args.seconds * args.step))
+    logger.info('Pids to monitor: {}'.format(args.pids))
     print(json.dumps(args.bench_type(args.database, args.pids, args.volume, args.seconds, args.step)))

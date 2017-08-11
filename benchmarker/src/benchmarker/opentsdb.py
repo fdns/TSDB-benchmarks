@@ -74,13 +74,10 @@ class OpenTSDBBaseBenchmark(AsyncBenchmark):
                     logger.exception(e)
 
     def _validate_data(self, expected, metric):
-        while self._data_in_queue():
-            logger.info('Waiting for data to be sended')
-            time.sleep(10)
-        time.sleep(60)
         with self.lock:
+            time.sleep(60)
             start = time.time()
-            url = 'http://localhost:4242/api/query?start={}&m=sum:1h-sum-none:{}'.format(int(time.time())-24*60*60, metric)
+            url = 'http://localhost:4242/api/query?start={}&m=sum:1h-sum-none:{}'.format(int(time.time())-30*24*60*60, metric)
             request = urllib2.Request(url)
             opener = urllib2.build_opener()
             result = opener.open(request).read()
@@ -119,10 +116,12 @@ class OpenTSDBDomainBenchmark(OpenTSDBBaseBenchmark):
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
+            return (start, -1)
         except Exception as e:
             logger.error(req)
             logger.exception(e)
-        return time.time() - start
+            return (start, -1)
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._validate_data(expected, 'domains')
@@ -151,10 +150,12 @@ class OpenTSDBMaskBenchmark(OpenTSDBBaseBenchmark):
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
+            return (start, -1)
         except Exception as e:
             logger.error(req)
             logger.exception(e)
-        return time.time() - start
+            return (start, -1)
+        return (start, time.time() - start)
 
     def validate_data(self, expected):
         return self._validate_data(expected, 'masks')
@@ -189,10 +190,12 @@ class OpenTSDBLengthBenchmark(OpenTSDBBaseBenchmark):
         except urllib2.HTTPError:
             logger.warning('Error reading data, this can happen the first time when no data have been inserted')
             logger.warning(req)
+            return (start, -1)
         except Exception as e:
             logger.exception(e)
             logger.error(req)
-        return time.time() - start
+            return (start, -1)
+        return (start, time.time() - start)
 
     def validate_data(self, _):
         return self._validate_data(self.count, 'length')

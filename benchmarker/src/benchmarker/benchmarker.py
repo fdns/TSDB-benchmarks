@@ -19,8 +19,12 @@ class Benchmark(object):
         raise NotImplementedError()
     def validate_data(self, expected):
         raise NotImplementedError()
+    def data_sended(self):
+        return True
 
 class AsyncBenchmark(Benchmark):
+    MAX_QUEUE_SIZE = 500000
+
     def initialize(self):
         self.cache = Queue()
         thread.start_new_thread(self.__process_queue, ())
@@ -42,4 +46,11 @@ class AsyncBenchmark(Benchmark):
         raise NotImplementedError()
 
     def insert_async(self, data):
+        # If the queue is bigger than the max, wait for it to process some data
+        # Every item will wait one second until the size is less than the max
+        if self.cache.qsize() > self.MAX_QUEUE_SIZE:
+            time.sleep(1)
         self.cache.put(data)
+
+    def data_sended(self):
+        return not self._data_in_queue()
