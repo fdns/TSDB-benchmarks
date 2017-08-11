@@ -85,8 +85,11 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return (before, time.time() - before)
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -145,8 +148,11 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return (before, time.time() - before)
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, expected):
         now = datetime.datetime.utcnow()
@@ -207,8 +213,11 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
             "intervals":["{}/{}".format((now - datetime.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"), now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
         }
         before = time.time()
-        self._query(query)
-        return (before, time.time() - before)
+        try:
+            self._query(query)
+            return (before, time.time() - before)
+        except Exception as e:
+            return (before, -1)
 
     def validate_data(self, _):
         now = datetime.datetime.utcnow()
