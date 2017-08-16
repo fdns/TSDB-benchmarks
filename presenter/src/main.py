@@ -8,6 +8,42 @@ def graph_query_time(data):
     plt.figure(fig.number)
     plt.plot(data, range(len(data)))
 
+def graph_cpu_usage_average(data, label, testname, fig=None):
+    if fig is None:
+        fig = plt.figure()
+    data = data['stats']
+    plt.figure(fig.number)
+    plt.title('{}: Tiempo de CPU utilizado promedio Vs Tiempo'.format(testname))
+    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
+    plt.ylabel('Tiempo de CPU utilizado promedio [jiffies]')
+
+    baset = data[0]['timestamp']
+    time = [(x['timestamp'] - baset) for x in data]
+
+    # Translate to a diff array
+    diffs = []
+    for i in range(1, len(data)):
+        diffs.append(data[i]['cpu'] - data[i-1]['cpu'])
+    time = time[1:]
+
+    # Calculating a moving average
+    moving = []
+    result = []
+    for x in diffs:
+        moving.append(x)
+        if len(moving) > 20:
+            moving.pop(0)
+        result.append(sum(moving)/len(moving))
+
+    # Calculate the trend
+    #import numpy
+    #z = numpy.polyfit(time, result, 1)
+    #p = numpy.poly1d(z)
+    #plt.plot(time, p(time), label=label)
+    plt.plot(time, result, label=label)
+    plt.legend()
+    return fig
+
 def graph_cpu_usuage(data, label, testname, fig=None):
     if fig is None:
         fig = plt.figure()
@@ -63,9 +99,18 @@ def graph_query_time(data, label, testname, fig=None):
     return fig
 
 def main():
-    graphs = (graph_cpu_usuage, graph_disk_usuage, graph_memory_usuage, graph_query_time)
-    tests = [('domain', 'Dominio'), ('mask', 'Mascara de Red'), ('length', 'Largode paquetes')]
-    databases = [#('clickhouse', 'ClickHouse'), # Require SSE4.2
+    graphs = (
+        graph_cpu_usuage,
+        graph_disk_usuage,
+        graph_memory_usuage,
+        graph_query_time,
+        graph_cpu_usage_average,)
+    tests = [
+        ('domain', 'Dominio'),
+        ('mask', 'Mascara de Red'),
+        ('length', 'Largode paquetes')
+    ]
+    databases = [('clickhouse', 'ClickHouse'), # Require SSE4.2
                  ('druid', 'Druid'),
                  ('elasticsearch', 'ElasticSearch'),
                  ('influxdb', 'InfluxDB'),
