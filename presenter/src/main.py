@@ -14,16 +14,16 @@ def graph_cpu_usage_average(data, label, testname, fig=None):
     data = data['stats']
     plt.figure(fig.number)
     plt.title('{}: Tiempo de CPU utilizado promedio Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
-    plt.ylabel('Tiempo de CPU utilizado promedio [jiffies]')
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
+    plt.ylabel('Tiempo de CPU utilizado promedio [segundos]')
 
     baset = data[0]['timestamp']
-    time = [(x['timestamp'] - baset) for x in data]
+    time = [(x['timestamp'] - baset)/60 for x in data]
 
     # Translate to a diff array
     diffs = []
     for i in range(1, len(data)):
-        diffs.append(data[i]['cpu'] - data[i-1]['cpu'])
+        diffs.append((data[i]['cpu'] - data[i-1]['cpu'])/100.)
     time = time[1:]
 
     # Calculating a moving average
@@ -50,11 +50,11 @@ def graph_cpu_usuage(data, label, testname, fig=None):
     data = data['stats']
     plt.figure(fig.number)
     plt.title('{}: Tiempo de CPU utilizado Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
-    plt.ylabel('Tiempo de CPU utilizado desde inicio de las mediciones [jiffies]')
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
+    plt.ylabel('Tiempo de CPU utilizado desde inicio de las mediciones [segundos]')
     baset = data[0]['timestamp']
     base_cpu = data[0]['cpu']
-    plt.plot([(x['timestamp'] - baset) for x in data], [(x['cpu'] - base_cpu) for x in data], label=label)
+    plt.plot([(x['timestamp'] - baset)/60 for x in data], [(x['cpu'] - base_cpu)/100 for x in data], label=label)
     plt.legend()
     return fig
 
@@ -65,10 +65,10 @@ def graph_disk_usuage(data, label, testname, fig=None):
     data = data['stats']
     plt.figure(fig.number)
     plt.title('{}: Espacio utilizado en memoria secundaria Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Espacio utilizado en memoria secundaria [megabytes]')
     base = data[0]['timestamp']
-    plt.plot([(x['timestamp'] - base) for x in data], [(x['disk'])/1024/1024 for x in data], label=label)
+    plt.plot([(x['timestamp'] - base)/60 for x in data], [(x['disk'])/1024/1024 for x in data], label=label)
     plt.legend()
     return fig
 
@@ -78,10 +78,10 @@ def graph_memory_usuage(data, label, testname, fig=None):
     data = data['stats']
     plt.figure(fig.number)
     plt.title('{}: Espacio utilizado en memoria primaria Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Espacio utilizado en memoria primaria [megabytes]')
     base = data[0]['timestamp']
-    plt.plot([(x['timestamp'] - base) for x in data], [(x['memory'])/1024/1024 for x in data], label=label)
+    plt.plot([(x['timestamp'] - base)/60 for x in data], [(x['memory'])/1024/1024 for x in data], label=label)
     plt.legend()
     return fig
 
@@ -91,10 +91,10 @@ def graph_query_time(data, label, testname, fig=None):
     data = data['query']
     plt.figure(fig.number)
     plt.title('{}: Tiempo de consulta Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [segundos]')
-    plt.ylabel('Tiempo utilizado en obtener los datos [segundos]')
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
+    plt.ylabel('Tiempo utilizado en obtener los datos [minutos]')
     base = data[0][0]
-    plt.plot([x[0]-base for x in data], [x[1] for x in data], label=label)
+    plt.plot([(x[0]-base)/60 for x in data], [x[1] for x in data], label=label)
     plt.legend()
     return fig
 
