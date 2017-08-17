@@ -62,6 +62,7 @@ class Benchmark(object):
         last_query = benchmarker.query_data()
         # Wait until all the data is sended
         while not benchmarker.data_sended():
+            logger.warning('Waiting for benchmarker to finish sending data')
             time.sleep(5)
         # Give the databases time to catch up before validating
         time.sleep(10)
