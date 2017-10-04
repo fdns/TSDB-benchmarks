@@ -24,3 +24,4 @@ def check_data_validity(data, file):
 
 def clear_invalid_points(data):
     data['query'] = [x for x in data['query'] if x[1] >= 0]
+

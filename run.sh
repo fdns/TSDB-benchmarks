@@ -5,9 +5,9 @@ sh benchmark.sh dockerfiles/prometheus prometheus length /bin/prometheus prometh
 sh benchmark.sh dockerfiles/druid druid domain "io.druid.cli.Main" druid_druid_volume out/druid_domain_1.out
 sh benchmark.sh dockerfiles/druid druid mask "io.druid.cli.Main" druid_druid_volume out/druid_mask_1.out
 sh benchmark.sh dockerfiles/druid druid length "io.druid.cli.Main" druid_druid_volume out/druid_length_1.out
-sh benchmark.sh dockerfiles/clickhouse clickhouse domain clickhouse-server clickhouse_clickhouse_volume out/clickhouse_domain_1.out
-sh benchmark.sh dockerfiles/clickhouse clickhouse mask clickhouse-server clickhouse_clickhouse_volume out/clickhouse_mask_1.out
-sh benchmark.sh dockerfiles/clickhouse clickhouse length clickhouse-server clickhouse_clickhouse_volume out/clickhouse_length_1.out
+#sh benchmark.sh dockerfiles/clickhouse clickhouse domain clickhouse-server clickhouse_clickhouse_volume out/clickhouse_domain_1.out
+#sh benchmark.sh dockerfiles/clickhouse clickhouse mask clickhouse-server clickhouse_clickhouse_volume out/clickhouse_mask_1.out
+#sh benchmark.sh dockerfiles/clickhouse clickhouse length clickhouse-server clickhouse_clickhouse_volume out/clickhouse_length_1.out
 sh benchmark.sh dockerfiles/influxdb influxdb domain influxd influxdb_influxdb_volume out/influxdb_domain_1.out
 sh benchmark.sh dockerfiles/influxdb influxdb mask influxd influxdb_influxdb_volume out/influxdb_mask_1.out
 sh benchmark.sh dockerfiles/influxdb influxdb length influxd influxdb_influxdb_volume out/influxdb_length_1.out
