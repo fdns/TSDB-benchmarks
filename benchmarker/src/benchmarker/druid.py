@@ -89,6 +89,7 @@ class DruidDomainBenchmark(DruidBaseBenchmark):
             self._query(query)
             return (before, time.time() - before)
         except Exception as e:
+            logger.exception(e)
             return (before, -1)
 
     def validate_data(self, expected):
@@ -152,6 +153,7 @@ class DruidMaskBenchmark(DruidBaseBenchmark):
             self._query(query)
             return (before, time.time() - before)
         except Exception as e:
+            logger.exception(e)
             return (before, -1)
 
     def validate_data(self, expected):
@@ -217,6 +219,7 @@ class DruidLengthBenchmark(DruidBaseBenchmark):
             self._query(query)
             return (before, time.time() - before)
         except Exception as e:
+            logger.exception(e)
             return (before, -1)
 
     def validate_data(self, _):

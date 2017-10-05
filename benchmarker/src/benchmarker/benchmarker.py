@@ -2,6 +2,9 @@ from Queue import Queue
 import thread
 import time
 
+import logging
+logger = logging.getLogger(__name__)
+
 class Benchmarker(object):
     def get_domain_benchmarker(self):
         raise NotImplementedError()
@@ -35,7 +38,10 @@ class AsyncBenchmark(Benchmark):
             for _ in range(self.cache.qsize()):
                 cache.append(self.cache.get_nowait())
             if len(cache) > 0:
-                self._insert_data(cache)
+                try:
+                    self._insert_data(cache)
+                except Exception as e:
+                    logger.exception(e)
             # Sleep for one second after the insert
             time.sleep(1)
 

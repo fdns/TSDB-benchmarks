@@ -170,6 +170,7 @@ class ElasticMaskBenchmark(ElasticBaseBenchmark):
         self.es.search(
             index='test',
             doc_type='mask',
+            timeout='60s',
             body={
                 'query': {
                 },
@@ -218,6 +219,7 @@ class ElasticLengthBenchmark(ElasticBaseBenchmark):
         self.es.search(
             index='test',
             doc_type='length',
+            timeout='60s',
             body={
                 'query': {
                 },

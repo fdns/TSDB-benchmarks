@@ -5,6 +5,9 @@ services:
     network_mode: "host"
     volumes:
       - prometheus_volume:/prometheus
+  #grafana:
+  #  build: ./grafana/
+  #  network_mode: "host"
 volumes:
   prometheus_volume:
     driver: local
