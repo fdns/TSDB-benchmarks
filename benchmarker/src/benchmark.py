@@ -2,7 +2,6 @@ from cpu_stats import fetch_docker_disk_usuage,fetch_proc_stats
 from multiprocessing.pool import ThreadPool
 import time
 import logging
-
 logger = logging.getLogger(__name__)
 
 class Benchmark(object):
@@ -45,7 +44,7 @@ class Benchmark(object):
         start = time.time()
         stat_result = []
         query_result = []
-        for i in range(total):
+        for i in xrange(total):
             if i % step == 0:
                 if i % (step*10) == 0:
                     stat_result.append(pool.apply_async(self.print_stats, (i, pid, volume)))
