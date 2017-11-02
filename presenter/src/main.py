@@ -2,13 +2,7 @@ import matplotlib.pyplot as plt
 from loader import load
 import logging
 
-def graph_query_time(data):
-    data = data['query']
-    fig = plt.figure()
-    plt.figure(fig.number)
-    plt.plot(data, range(len(data)))
-
-def graph_cpu_usage_average(data, label, testname, fig=None):
+def graph_cpu_usage_average(data, label, testname, fig=None, index=0):
     if fig is None:
         fig = plt.figure()
     data = data['stats']
@@ -44,7 +38,7 @@ def graph_cpu_usage_average(data, label, testname, fig=None):
     plt.legend()
     return fig
 
-def graph_cpu_usuage(data, label, testname, fig=None):
+def graph_cpu_usuage(data, label, testname, fig=None, index=0):
     if fig is None:
         fig = plt.figure()
     data = data['stats']
@@ -59,7 +53,7 @@ def graph_cpu_usuage(data, label, testname, fig=None):
     return fig
 
 
-def graph_disk_usuage(data, label, testname, fig=None):
+def graph_disk_usuage(data, label, testname, fig=None, index=0):
     if fig is None:
         fig = plt.figure()
     data = data['stats']
@@ -72,7 +66,7 @@ def graph_disk_usuage(data, label, testname, fig=None):
     plt.legend()
     return fig
 
-def graph_memory_usuage(data, label, testname, fig=None):
+def graph_memory_usuage(data, label, testname, fig=None, index=0):
     if fig is None:
         fig = plt.figure()
     data = data['stats']
@@ -85,7 +79,7 @@ def graph_memory_usuage(data, label, testname, fig=None):
     plt.legend()
     return fig
 
-def graph_query_time(data, label, testname, fig=None):
+def graph_query_time(data, label, testname, fig=None, index=0):
     if fig is None:
         fig = plt.figure()
     data = data['query']
@@ -98,13 +92,39 @@ def graph_query_time(data, label, testname, fig=None):
     plt.legend()
     return fig
 
+LABELS={}
+def graph_bar_query_time(data, label, testname, fig=None, index=0):
+    global LABELS
+    if fig is None:
+        fig = plt.figure()
+        LABELS[testname] = []
+
+    data = data['query']
+    plt.figure(fig.number)
+    plt.title('{}: Tiempo de consulta Vs Tiempo'.format(testname))
+    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
+    plt.ylabel('Tiempo utilizado en obtener los datos [minutos]')
+    base = data[0][0]
+    lowcap = base + 4*60*60
+    upcap = lowcap + 2*60*60
+
+    values = [x[1] for x in data if lowcap <= x[0] <= upcap]
+    if len(values) > 0:
+        LABELS[testname].append(label)
+        plt.bar(len(LABELS[testname])*0.6, sum(values) / len(values), width=0.4, label=label)
+        plt.xticks([(x+1) * 0.6 for x in range(len(LABELS[testname]))], LABELS[testname])
+        plt.legend()
+
+    return fig
+
+
 def main():
     graphs = (
         graph_cpu_usuage,
         graph_disk_usuage,
         graph_memory_usuage,
         graph_query_time,
-        graph_cpu_usage_average,)
+        graph_cpu_usage_average,graph_bar_query_time)
     tests = [
         ('domain', 'Dominio'),
         ('mask', 'Mascara de Red'),
@@ -119,11 +139,13 @@ def main():
     ]
     for test in tests:
         fig = [None for _ in range(len(graphs))]
+        index = [0 for _ in range(len(graphs))]
         for db in databases:
             data = load('../../out/{}_{}_1.out'.format(db[0], test[0]))
             if data:
                 for i in range(len(graphs)):
-                    fig[i] = graphs[i](data, db[1], test[1], fig[i])
+                    fig[i] = graphs[i](data, db[1], test[1], fig[i], index[i])
+                    index[i] += 1
     plt.show()
 
 if __name__ == '__main__':
