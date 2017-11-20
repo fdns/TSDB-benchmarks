@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 from loader import load
 import logging
@@ -117,6 +118,28 @@ def graph_bar_query_time(data, label, testname, fig=None, index=0):
 
     return fig
 
+LABELS2={}
+def graph_bar_run_time(data, label, testname, fig=None, index=0):
+    global LABELS2
+    if fig is None:
+        fig = plt.figure()
+        LABELS2[testname] = []
+
+    data = data['query']
+    plt.figure(fig.number)
+    plt.title('{}: Tiempo de ejecucion de pruebas Vs Base de datos'.format(testname))
+    plt.xlabel('Base de datos')
+    plt.ylabel('Tiempo de ejecucion [minutos]')
+    value = (data[-1][0] - data[0][0])/60
+    if value > 0:
+        LABELS2[testname].append(label)
+        plt.bar(len(LABELS2[testname])*0.6, value, width=0.4, label=label)
+        plt.ylim([300,500])
+        plt.xticks([(x+1) * 0.6 for x in range(len(LABELS2[testname]))], LABELS2[testname])
+        plt.legend()
+
+    return fig
+
 def tendency_line():
     folders = {3000: 'out3000', 5000: 'out5000', 10000: 'out10000', 40000: 'out40000'}
     tests = [
@@ -146,23 +169,22 @@ def tendency_line():
                     data[num] = sum(values) / len(values)
         #plt.plot(data.keys(), data.values(), 'o-', label=db[1])
         plt.plot(sorted(data.keys()), [data[x] for x in sorted(data.keys())], 'o-', label=db[1])
-        print(data.keys(), data.values())
         plt.legend()
-    plt.show()
 
 
 def main():
-   tendency_line()
-   graphs = (
+    tendency_line()
+    graphs = (
         graph_cpu_usuage,
         graph_disk_usuage,
         graph_memory_usuage,
         graph_query_time,
-        graph_cpu_usage_average,graph_bar_query_time)
+        graph_cpu_usage_average,graph_bar_query_time,
+        graph_bar_run_time)
     tests = [
         ('domain', 'Dominio'),
-        #('mask', 'Mascara de Red'),
-        #('length', 'Largode paquetes')
+        ('mask', 'Mascara de Red'),
+        ('length', 'Largode paquetes')
     ]
     databases = [('clickhouse', 'ClickHouse'), # Require SSE4.2
                  ('druid', 'Druid'),
