@@ -123,7 +123,8 @@ class ElasticDomainBenchmark(ElasticBaseBenchmark):
             self.es.search(
                 index='test',
                 doc_type='domain',
-                timeout='60s',
+                timeout='300s',
+                request_timeout=300,
                 body={
                     'query': {
                     },

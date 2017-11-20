@@ -101,9 +101,9 @@ def graph_bar_query_time(data, label, testname, fig=None, index=0):
 
     data = data['query']
     plt.figure(fig.number)
-    plt.title('{}: Tiempo de consulta Vs Tiempo'.format(testname))
-    plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
-    plt.ylabel('Tiempo utilizado en obtener los datos [minutos]')
+    plt.title('{}: Tiempo de consulta Vs Base de datos'.format(testname))
+    plt.xlabel('Base de datos')
+    plt.ylabel('Tiempo de consulta [segundos]')
     base = data[0][0]
     lowcap = base + 4*60*60
     upcap = lowcap + 2*60*60
@@ -117,9 +117,43 @@ def graph_bar_query_time(data, label, testname, fig=None, index=0):
 
     return fig
 
+def tendency_line():
+    folders = {3000: 'out3000', 5000: 'out5000', 10000: 'out10000', 40000: 'out40000'}
+    tests = [
+        ('domain', 'Dominio'),
+    ]
+    databases = [('clickhouse', 'ClickHouse'), # Require SSE4.2
+                 ('druid', 'Druid'),
+                 ('elasticsearch', 'ElasticSearch'),
+                 ('influxdb', 'InfluxDB'),
+                 ('prometheus', 'Prometheus'),
+                 ('opentsdb', 'OpenTSDB')
+    ]
+    fig = plt.figure()
+    plt.title('Tiempo de consulta promedio Vs Carga de datos')
+    plt.xlabel('Carga de datos [datos/segundo]')
+    plt.ylabel('Tiempo de consulta promedio [segundos]')
+    for db in databases:
+        data = {}
+        for num, fold in folders.iteritems():
+            raw = load('../../{}/{}_{}_1.out'.format(fold, db[0], 'domain'))
+            if raw:
+                base = raw['query'][0][0]
+                lowcap = base + 4*60*60
+                upcap = lowcap + 2*60*60
+                values = [x[1] for x in raw['query'] if lowcap <= x[0] <= upcap]
+                if len(values) > 0:
+                    data[num] = sum(values) / len(values)
+        #plt.plot(data.keys(), data.values(), 'o-', label=db[1])
+        plt.plot(sorted(data.keys()), [data[x] for x in sorted(data.keys())], 'o-', label=db[1])
+        print(data.keys(), data.values())
+        plt.legend()
+    plt.show()
+
 
 def main():
-    graphs = (
+   tendency_line()
+   graphs = (
         graph_cpu_usuage,
         graph_disk_usuage,
         graph_memory_usuage,
@@ -127,8 +161,8 @@ def main():
         graph_cpu_usage_average,graph_bar_query_time)
     tests = [
         ('domain', 'Dominio'),
-        ('mask', 'Mascara de Red'),
-        ('length', 'Largode paquetes')
+        #('mask', 'Mascara de Red'),
+        #('length', 'Largode paquetes')
     ]
     databases = [('clickhouse', 'ClickHouse'), # Require SSE4.2
                  ('druid', 'Druid'),
