@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
+import matplotlib._pylab_helpers
 from loader import load
 import logging
 
@@ -11,6 +12,7 @@ def graph_cpu_usage_average(data, label, testname, fig=None, index=0):
     plt.title('{}: Tiempo de CPU utilizado promedio Vs Tiempo'.format(testname))
     plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Tiempo de CPU utilizado promedio [segundos]')
+    plt.xlim([-10, 60*6+20])
 
     baset = data[0]['timestamp']
     time = [(x['timestamp'] - baset)/60 for x in data]
@@ -47,6 +49,9 @@ def graph_cpu_usuage(data, label, testname, fig=None, index=0):
     plt.title('{}: Tiempo de CPU utilizado Vs Tiempo'.format(testname))
     plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Tiempo de CPU utilizado desde inicio de las mediciones [segundos]')
+    plt.xlim([-10, 60*6+20])
+
+
     baset = data[0]['timestamp']
     base_cpu = data[0]['cpu']
     plt.plot([(x['timestamp'] - baset)/60 for x in data], [(x['cpu'] - base_cpu)/100 for x in data], label=label)
@@ -62,6 +67,8 @@ def graph_disk_usuage(data, label, testname, fig=None, index=0):
     plt.title('{}: Espacio utilizado en memoria secundaria Vs Tiempo'.format(testname))
     plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Espacio utilizado en memoria secundaria [megabytes]')
+    plt.xlim([-10, 60*6+20])
+
     base = data[0]['timestamp']
     plt.plot([(x['timestamp'] - base)/60 for x in data], [(x['disk'])/1024/1024 for x in data], label=label)
     plt.legend()
@@ -88,6 +95,13 @@ def graph_query_time(data, label, testname, fig=None, index=0):
     plt.title('{}: Tiempo de consulta Vs Tiempo'.format(testname))
     plt.xlabel('Tiempo desde inicio de mediciones [minutos]')
     plt.ylabel('Tiempo utilizado en obtener los datos [minutos]')
+    plt.xlim([-10, 60*6+20])
+    #plt.ylim([-5, min(100, max([x[1] for x in data])+10)])
+    if testname == "Dominio":
+        plt.ylim([-5, 100])
+    elif testname == "Mascara de Red":
+        plt.ylim([-1, 6])
+
     base = data[0][0]
     plt.plot([(x[0]-base)/60 for x in data], [x[1] for x in data], label=label)
     plt.legend()
@@ -156,6 +170,7 @@ def tendency_line():
     plt.title('Tiempo de consulta promedio Vs Carga de datos')
     plt.xlabel('Carga de datos [datos/segundo]')
     plt.ylabel('Tiempo de consulta promedio [segundos]')
+    plt.ylim([-10,100])
     for db in databases:
         data = {}
         for num, fold in folders.iteritems():
@@ -168,12 +183,15 @@ def tendency_line():
                 if len(values) > 0:
                     data[num] = sum(values) / len(values)
         #plt.plot(data.keys(), data.values(), 'o-', label=db[1])
+        print db[1]
+        print data
         plt.plot(sorted(data.keys()), [data[x] for x in sorted(data.keys())], 'o-', label=db[1])
         plt.legend()
 
 
 def main():
     tendency_line()
+
     graphs = (
         graph_cpu_usuage,
         graph_disk_usuage,
@@ -202,6 +220,10 @@ def main():
                 for i in range(len(graphs)):
                     fig[i] = graphs[i](data, db[1], test[1], fig[i], index[i])
                     index[i] += 1
+    figures = [manager.canvas.figure
+               for manager in matplotlib._pylab_helpers.Gcf.get_all_fig_managers()]
+    for i, figure in enumerate(figures):
+        figure.savefig('tmp/figure%d.png' % i)
     plt.show()
 
 if __name__ == '__main__':
